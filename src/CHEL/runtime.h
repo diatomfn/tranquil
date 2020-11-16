@@ -3,8 +3,9 @@
 #include "pch.h"
 
 #include "module.h"
-#include "CHEL/output/log.h"
 #include "object.h"
+
+#include "CHEL/output/log.h"
 #include "CHEL/eventloop/eventloop.h"
 
 namespace JS {
@@ -22,6 +23,9 @@ namespace JS {
         std::unordered_map<std::string, JsValueRef> requireMap;
         JS::EventLoop eventLoop;
 
-        JsValueRef RequireNative(JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount);
+        // Register native functions into the runtime
+        void RegisterBindings();
+
+        friend class Bindings;
     };
 }

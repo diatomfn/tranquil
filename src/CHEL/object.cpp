@@ -7,10 +7,6 @@
 
 namespace JS {
     JsValueRef Object::GetProperty(const std::string& key) const {
-        JsPropertyIdRef keyID;
-        if (JsCreatePropertyId(key.c_str(), key.length() - 1, &keyID) != JsNoError)
-            throw FatalRuntimeException();
-
         JsValueRef propertyValue;
         if (JsObjectGetProperty(this->jsObject, JS::String::ToJS(key.c_str()), &propertyValue) != JsNoError)
             throw FatalRuntimeException();

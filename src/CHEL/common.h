@@ -9,4 +9,5 @@ namespace JS::Common {
     JsValueType GetValueType(JsValueRef value);
     bool IsPromise(JsValueRef value);
     JsValueRef GetNewObject();
+    JsValueRef CreateFunction(JsNativeFunction function, void* callbackState);
 }

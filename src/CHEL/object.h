@@ -8,15 +8,13 @@
 namespace JS {
     class Object {
     public:
-        explicit Object(JsValueRef& ref) : jsObject(ref) {};
+        explicit Object(JsValueRef ref) : jsObject(ref) {};
 
         JsValueRef GetProperty(const std::string& key) const;
         void SetProperty(const std::string& key, JsValueRef value) const;
 
         void SetFunctionProperty(const char* key, JsNativeFunction callback, void* moduleInstance = nullptr) const;
 
-        JsValueRef& jsObject;
-
-        JsValueRef GetCopy() const;
+        JsValueRef jsObject;
     };
 }

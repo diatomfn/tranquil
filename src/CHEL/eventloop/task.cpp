@@ -1,7 +1,7 @@
 #include "task.h"
 
 namespace JS {
-    Task::Task(JsValueRef func, int delay, JsValueRef thisArg, JsValueRef extraArgs, bool repeat) : func(func), delay(delay), repeat(repeat) {
+    Task::Task(JsValueRef func, int delay, JsValueRef thisArg, JsValueRef extraArgs, JsValueRef repeat) : func(func), delay(delay), repeat(repeat) {
         this->args[0] = thisArg;
         this->args[1] = extraArgs;
         this->time = (int)(clock() / (double)(CLOCKS_PER_SEC / 1000));

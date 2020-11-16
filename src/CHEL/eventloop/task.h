@@ -7,16 +7,15 @@
 namespace JS {
     class Task {
     public:
-        Task(JsValueRef func, int delay, JsValueRef thisArg, JsValueRef extraArgs, bool repeat = false);
+        Task(JsValueRef func, int delay, JsValueRef thisArg, JsValueRef extraArgs, JsValueRef repeat);
         JsValueRef Invoke();
         ~Task();
 
-    //private:
         JsValueRef func;
         JsValueRef args[2];
         int argCount = 1;
         int delay;
-        bool repeat;
+        JsValueRef repeat;
         int time;
     };
 }

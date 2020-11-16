@@ -1,5 +1,7 @@
 #include "string.h"
 
+#include "common.h"
+
 namespace JS::String {
     JsValueRef ToJS(const char* str) {
         JsValueRef js_str;

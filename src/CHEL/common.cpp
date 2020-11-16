@@ -32,4 +32,10 @@ namespace JS::Common {
             return false;
         return true;
     }
+    JsValueRef CreateFunction(JsNativeFunction function, void* callbackState) {
+        JsValueRef ret;
+        if (JsCreateFunction(function, callbackState, &ret) != JsNoError)
+            throw FatalRuntimeException();
+        return ret;
+    }
 }

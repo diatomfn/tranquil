@@ -9,10 +9,7 @@
 #include "native.h"
 #include "common.h"
 
-JsValueRef Log(JsValueRef callee, bool isConstructCall, JsValueRef *arguments, unsigned short argumentCount, void *callbackState) {
-    std::cout << JS::String::FromJS(arguments[1]) << std::endl;
-    return JS_INVALID_REFERENCE;
-}
+#define BIND_NATIVE(object, name, function) object.SetFunctionProperty(name, function, this)
 
 namespace JS {
     Runtime::Runtime() {
@@ -29,12 +26,10 @@ namespace JS {
         // Setup native function binds from JS
         Native::Init();
 
+        // Register bindings from C++ to JS
+        this->RegisterBindings();
+
         this->eventLoop.SetCallback();
-
-        JsValueRef globalRef = JS::Common::GetGlobalObject();
-        JS::Object global(globalRef);
-
-        global.SetFunctionProperty("require", METHOD_BIND(Runtime, &Runtime::RequireNative), this);
     }
 
     JS::Output::Log Runtime::Run(const std::string &script) {
@@ -91,17 +86,13 @@ namespace JS {
         }
     }
 
-    JsValueRef Runtime::RequireNative(JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount) {
-        if (argumentCount < 1) {
-            return JS_INVALID_REFERENCE;
-        }
+    void Runtime::RegisterBindings() {
+        JsValueRef globalRef = JS::Common::GetGlobalObject();
+        JS::Object global(globalRef);
 
-        std::string requireName = JS::String::FromJS(args[1]);
-
-        if (this->requireMap.find(requireName) != this->requireMap.end()) {
-            return this->requireMap[requireName];
-        }
-
-        return JS_INVALID_REFERENCE;
+        BIND_NATIVE(global, "require", Bindings::NativeRequire);
+        BIND_NATIVE(global, "setTimeout", Bindings::NativeSetTimeout);
+        // Disabled until repeat fixed
+        // BIND_NATIVE(global, "setInterval", Bindings::NativeSetInterval);
     }
 }
