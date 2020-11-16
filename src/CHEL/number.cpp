@@ -10,7 +10,7 @@ namespace JS::Number {
         return value;
     };
 
-    int FromJS(JsValueRef& value) {
+    int FromJS(JsValueRef value) {
         int num;
 
         if (JsNumberToInt(value, &num) != JsNoError)

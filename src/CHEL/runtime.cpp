@@ -90,9 +90,12 @@ namespace JS {
         JsValueRef globalRef = JS::Common::GetGlobalObject();
         JS::Object global(globalRef);
 
-        BIND_NATIVE(global, "require", Bindings::NativeRequire);
-        BIND_NATIVE(global, "setTimeout", Bindings::NativeSetTimeout);
-        // Disabled until repeat fixed
-        // BIND_NATIVE(global, "setInterval", Bindings::NativeSetInterval);
+        global.SetFunctionProperty("require", Bindings::NativeRequire, this);
+        global.SetFunctionProperty("setTimeout", Bindings::NativeSetTimeout, this);
+        global.SetFunctionProperty("setInterval", Bindings::NativeSetInterval, this);
+
+        // Clear interval/timeout, same function with two aliases
+        global.SetFunctionProperty("clearTimeout", Bindings::NativeClearTimeout, nullptr);
+        global.SetFunctionProperty("clearInterval", Bindings::NativeClearTimeout, nullptr);
     }
 }

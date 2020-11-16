@@ -3,19 +3,20 @@
 #include "CHEL/pch.h"
 
 #include "CHEL/FatalRuntimeException.h"
+#include "timeout.h"
 
 namespace JS {
     class Task {
     public:
-        Task(JsValueRef func, int delay, JsValueRef thisArg, JsValueRef extraArgs, JsValueRef repeat);
+        Task(JsValueRef timeout, JsValueRef thisArg, JsValueRef extraArgs, bool repeat = false);
         JsValueRef Invoke();
         ~Task();
 
-        JsValueRef func;
+        JsValueRef timeout;
         JsValueRef args[2];
         int argCount = 1;
         int delay;
-        JsValueRef repeat;
+        bool repeat;
         int time;
     };
 }

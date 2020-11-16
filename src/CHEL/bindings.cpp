@@ -32,11 +32,12 @@ namespace JS {
             return JS_INVALID_REFERENCE;
 
         JsValueRef func = args[1];
-        int delay = JS::Number::FromJS(args[2]);
 
-        runtime->eventLoop.taskQueue.push(new Task(func, delay, args[0], JS_INVALID_REFERENCE, JS::Boolean::ToJS(false)));
+        JS::Timeout timeout(func, args[2], JS::Boolean::ToJS(false));
 
-        return JS_INVALID_REFERENCE;
+        runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE));
+
+        return timeout.object;
     }
 
     JsValueRef Bindings::NativeSetInterval(JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) {
@@ -46,17 +47,21 @@ namespace JS {
             return JS_INVALID_REFERENCE;
 
         JsValueRef func = args[1];
-        int delay = JS::Number::FromJS(args[2]);
 
-        JsValueRef jsObj = JS::Common::GetNewObject();
-        JS::Object object(jsObj);
+        JS::Timeout timeout(func, args[2], JS::Boolean::ToJS(false));
 
-        // Set meta values of interval object
-        JsValueRef repeat = JS::Boolean::ToJS(true);
-        object.SetProperty("_repeat", repeat);
+        runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE, true));
 
-        runtime->eventLoop.taskQueue.push(new Task(func, delay, args[0], JS_INVALID_REFERENCE, repeat));
+        return timeout.object;
+    }
 
-        return object.jsObject;
+    JsValueRef Bindings::NativeClearTimeout(JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) {
+        if (isConstructCall || argumentCount < 2)
+            return JS_INVALID_REFERENCE;
+
+        Timeout timeout(args[1]);
+        timeout.Destroy();
+
+        return JS_INVALID_REFERENCE;
     }
 }
