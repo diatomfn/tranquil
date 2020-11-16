@@ -24,11 +24,31 @@ namespace JS {
     }
 
     JsValueRef Native::JSONStringify(JsValueRef object) {
-        JsValueRef arguments[] = {JS::Common::GetUndefined(), object};
+        JsValueRef function;
+
+        auto parseFormat = [](JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) -> JsValueRef {
+            if (argumentCount < 3) {
+                return JS_INVALID_REFERENCE;
+            }
+
+            JsValueType type;
+            if (JsGetValueType(args[2], &type) != JsNoError)
+                return args[2];
+
+            if (type == JsFunction)
+                return JS::String::ToJS("[function]");
+
+            return args[2];
+        };
+
+        if (JsCreateFunction(parseFormat, nullptr, &function) != JsNoError)
+            throw FatalRuntimeException();
+
+        JsValueRef arguments[] = {JS::Common::GetUndefined(), object, function};
 
         JsValueRef result;
 
-        if (JsCallFunction(Native::jsonStringify, arguments, 2, &result) != JsNoError)
+        if (JsCallFunction(Native::jsonStringify, arguments, 3, &result) != JsNoError)
             throw FatalRuntimeException();
 
         return result;
