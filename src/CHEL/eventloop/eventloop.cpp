@@ -16,12 +16,8 @@ namespace JS {
         JsValueRef global = JS::Common::GetGlobalObject();
         auto* queue = static_cast<std::queue<Task*>*>(callbackState);
 
-        JsValueRef jsObj = JS::Common::GetNewObject();
-        JS::Object object(jsObj);
-        object.SetProperty("_destroyed", JS::Boolean::ToJS(false));
-        object.SetProperty("_onTimeout", task);
-
-        queue->push(new Task(jsObj, global, JS_INVALID_REFERENCE, JS::Boolean::ToJS(false)));
+        JS::Timeout timeout(task, JS::Number::ToJS(0), JS::Boolean::ToJS(false));
+        queue->push(new Task(timeout.object, global, JS_INVALID_REFERENCE, false));
     }
 
     void EventLoop::Loop() {
@@ -29,7 +25,8 @@ namespace JS {
             Task* task = taskQueue.front();
             taskQueue.pop();
             auto timeout = JS::Timeout(task->timeout);
-            int currentTime = (int)(clock() / (double)(CLOCKS_PER_SEC / 1000));
+
+            int currentTime = (int)(clock() / (CLOCKS_PER_SEC / (double)1000));
             if (!JS::Boolean::FromJS(timeout._destroyed)) {
                 if (currentTime-task->time > JS::Number::FromJS(timeout._repeat)) {
                     task->Invoke();
