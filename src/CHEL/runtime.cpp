@@ -9,7 +9,6 @@
 #include "native.h"
 #include "common.h"
 
-#define BIND_NATIVE(object, name, function) object.SetFunctionProperty(name, function, this)
 
 namespace JS {
     Runtime::Runtime() {
@@ -41,7 +40,7 @@ namespace JS {
 
         JsValueRef result;
 
-        if (JsRun(jScript, 0, name, JsParseScriptAttributeNone, &result)) {
+        if (JsRun(jScript, 0, name, JsParseScriptAttributeNone, &result) != JsNoError) {
             // Get exception object
             JsValueRef jsException;
             if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
@@ -97,5 +96,12 @@ namespace JS {
         // Clear interval/timeout, same function with two aliases
         global.SetFunctionProperty("clearTimeout", Bindings::NativeClearTimeout, nullptr);
         global.SetFunctionProperty("clearInterval", Bindings::NativeClearTimeout, nullptr);
+    }
+
+    void Runtime::ThrowException(const char *error) {
+        JsValueRef value = JS::String::ToJS(error);
+        JsValueRef errorObject;
+        if (JsCreateError(value, &errorObject) != JsNoError) return;
+        if (JsSetException(errorObject) != JsNoError) return;
     }
 }

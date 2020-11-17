@@ -16,6 +16,8 @@ namespace JS {
         JS::Output::Log Run(const std::string& script);
         void Register(const char* name, JsValueRef value, bool isGlobal);
         Output::Log logOutput;
+
+        static void ThrowException(const char* error);
     private:
         JsRuntimeHandle runtime = nullptr;
         JsContextRef context = nullptr;

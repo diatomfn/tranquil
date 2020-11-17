@@ -13,7 +13,7 @@ namespace JS::Common {
             throw FatalRuntimeException();
         return global;
     }
-    JsValueType GetValueType(JsValueRef value) {
+    JsValueType GetType(JsValueRef value) {
         JsValueType type;
         if (JsGetValueType(value, &type) != JsNoError)
             throw FatalRuntimeException();
@@ -37,5 +37,43 @@ namespace JS::Common {
         if (JsCreateFunction(function, callbackState, &ret) != JsNoError)
             throw FatalRuntimeException();
         return ret;
+    }
+    const char* GetTypeString(JsValueType type) {
+        switch (type) {
+            case JsString:
+                return "string";
+            case JsNumber:
+                return "number";
+            case JsFunction:
+                return "function";
+            case JsNull:
+                return "null";
+            case JsUndefined:
+                return "undefined";
+            case JsError:
+                return "error";
+            case JsObject:
+                return "object";
+            case JsArray:
+                return "array";
+            case JsArrayBuffer:
+                return "arraybuffer";
+            case JsTypedArray:
+                return "typedarray";
+            case JsBoolean:
+                return "boolean";
+            case JsDataView:
+                return "dataview";
+            case JsSymbol:
+                return "symbol";
+        }
+    }
+    bool CheckArgument(JsValueRef value, JsValueType type, bool exception) {
+        if (JS::Common::GetType(value) != type) {
+            if (exception)
+                JS::Runtime::ThrowException(std::string("Argument type is invalid, expected ").append(JS::Common::GetTypeString(type)).c_str());
+            return false;
+        }
+        return true;
     }
 }
