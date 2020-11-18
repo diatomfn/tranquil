@@ -11,7 +11,8 @@
 namespace JS {
     class Runtime {
     public:
-        Runtime();
+        explicit Runtime(int memoryLimit);
+
         ~Runtime();
         JS::Output::Log Run(const std::string& script);
         void Register(const char* name, JsValueRef value, bool isGlobal);

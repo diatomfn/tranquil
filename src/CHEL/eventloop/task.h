@@ -15,7 +15,6 @@ namespace JS {
         JsValueRef timeout;
         JsValueRef args[2];
         int argCount = 1;
-        int delay;
         bool repeat;
         int time;
     };

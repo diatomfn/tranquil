@@ -11,11 +11,11 @@
 
 
 namespace JS {
-    Runtime::Runtime() {
+    Runtime::Runtime(int memoryLimit) {
         if (JsCreateRuntime(JsRuntimeAttributeDisableFatalOnOOM, nullptr, &this->runtime) != JsNoError)
             throw FatalRuntimeException();
 
-        JsSetRuntimeMemoryLimit(this->runtime, 10000000);
+        JsSetRuntimeMemoryLimit(this->runtime, memoryLimit * 1048576);
 
         if (JsCreateContext(this->runtime, &this->context) != JsNoError)
             throw FatalRuntimeException();
