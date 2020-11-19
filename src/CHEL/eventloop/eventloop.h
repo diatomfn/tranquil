@@ -5,7 +5,7 @@
 #include "CHEL/bindings.h"
 #include "task.h"
 
-#include "CHEL/boolean.h"
+#include "CHEL/types/types.h"
 
 namespace JS {
     // Declare to prevent include loop

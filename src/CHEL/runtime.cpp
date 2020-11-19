@@ -2,13 +2,13 @@
 
 #include "FatalRuntimeException.h"
 
-// Include JS type wrappers
-#include "number.h"
-#include "string.h"
-#include "object.h"
+//// Include JS type wrappers
+//#include "number.h"
+//#include "string.h"
+//#include "object.h"
+#include "types/types.h"
 #include "native.h"
 #include "common.h"
-
 
 namespace JS {
     Runtime::Runtime(int memoryLimit) {
@@ -35,8 +35,8 @@ namespace JS {
         if (JsSetCurrentContext(this->context) != JsNoError)
             throw FatalRuntimeException();
 
-        JsValueRef jScript = JS::String::ToJS(script.c_str());
-        JsValueRef name = JS::String::ToJS("script");
+        JsValueRef jScript = JS::String(script.c_str());
+        JsValueRef name = JS::String("script");
 
         JsValueRef result;
 
@@ -49,14 +49,14 @@ namespace JS {
             // Get main exception object
             JS::Object exceptionMeta(jsException);
 
-            JsValueRef exceptionValue = exceptionMeta.GetProperty("exception");
+            JsValueRef exceptionValue = (JsValueRef)exceptionMeta.GetProperty("exception");
             JS::Object exception(exceptionValue);
 
-            JsValueRef messageValue = exception.GetProperty("message");
-            JsValueRef lineValue = exceptionMeta.GetProperty("line");
+            JsValueRef messageValue = (JsValueRef)exception.GetProperty("message");
+            JsValueRef lineValue = (JsValueRef)exceptionMeta.GetProperty("line");
 
-            std::string message = JS::String::FromJS(messageValue);
-            int line = JS::Number::FromJS(lineValue);
+            std::string message = JS::String(lineValue).FromJS();
+            int line = (int)JS::Number(lineValue).FromJS();
 
             // Push the error to the log
             logOutput.Push(message, Output::LogType::ERROR, line);
@@ -72,11 +72,9 @@ namespace JS {
         JsDisposeRuntime(this->runtime);
     }
 
-    void Runtime::Register(const char *name, JsValueRef value, bool isGlobal) {
+    void Runtime::Register(const char *name, JS::Value value, bool isGlobal) {
         if (isGlobal) {
-            JsValueRef globalRef = JS::Common::GetGlobalObject();
-
-            JS::Object global(globalRef);
+            JS::Object global(JS::Common::GetGlobalObject());
 
             // Set return to result
             global.SetProperty(name, value);
@@ -89,17 +87,17 @@ namespace JS {
         JsValueRef globalRef = JS::Common::GetGlobalObject();
         JS::Object global(globalRef);
 
-        global.SetFunctionProperty("require", Bindings::NativeRequire, this);
-        global.SetFunctionProperty("setTimeout", Bindings::NativeSetTimeout, this);
-        global.SetFunctionProperty("setInterval", Bindings::NativeSetInterval, this);
+        global.SetProperty("require", Bindings::NativeRequire, this);
+        global.SetProperty("setTimeout", Bindings::NativeSetTimeout, this);
+        global.SetProperty("setInterval", Bindings::NativeSetInterval, this);
 
         // Clear interval/timeout, same function with two aliases
-        global.SetFunctionProperty("clearTimeout", Bindings::NativeClearTimeout, nullptr);
-        global.SetFunctionProperty("clearInterval", Bindings::NativeClearTimeout, nullptr);
+        global.SetProperty("clearTimeout", Bindings::NativeClearTimeout, nullptr);
+        global.SetProperty("clearInterval", Bindings::NativeClearTimeout, nullptr);
     }
 
     void Runtime::ThrowException(const char *error) {
-        JsValueRef value = JS::String::ToJS(error);
+        JS::String value(error);
         JsValueRef errorObject;
         if (JsCreateError(value, &errorObject) != JsNoError) return;
         if (JsSetException(errorObject) != JsNoError) return;

@@ -13,9 +13,9 @@ namespace JS {
     }
 
     JsValueRef Native::GetFromJS(const char *identifier) {
-        JsValueRef toReturn = JS::String::ToJS(identifier);
+        JsValueRef toReturn = JS::String(identifier);
 
-        JsValueRef name = JS::String::ToJS(identifier);
+        JsValueRef name = JS::String(identifier);
 
         JsValueRef result;
         JsRun(toReturn, 0, name, JsParseScriptAttributeNone, &result);
@@ -36,7 +36,7 @@ namespace JS {
                 return args[2];
 
             if (type == JsFunction)
-                return JS::String::ToJS("[function]");
+                return JS::String("[function]");
 
             return args[2];
         };

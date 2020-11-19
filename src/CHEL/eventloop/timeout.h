@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CHEL/pch.h"
+#include "CHEL/types/types.h"
 
 namespace JS {
     class Timeout {
@@ -19,6 +20,6 @@ namespace JS {
         JsValueRef _repeat;
         JsValueRef _destroyed;
 
-        JsValueRef object;
+        JS::Object object;
     };
 }

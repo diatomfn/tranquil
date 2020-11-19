@@ -3,7 +3,7 @@
 #include "pch.h"
 
 #include "module.h"
-#include "object.h"
+#include "types/types.h"
 
 #include "CHEL/output/log.h"
 #include "CHEL/eventloop/eventloop.h"
@@ -15,7 +15,7 @@ namespace JS {
 
         ~Runtime();
         JS::Output::Log Run(const std::string& script);
-        void Register(const char* name, JsValueRef value, bool isGlobal);
+        void Register(const char* name, JS::Value value, bool isGlobal);
         Output::Log logOutput;
 
         static void ThrowException(const char* error);

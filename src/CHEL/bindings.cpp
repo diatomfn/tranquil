@@ -1,8 +1,8 @@
 #include "bindings.h"
 
 #include "runtime.h"
-#include "string.h"
-#include "boolean.h"
+//#include "string.h"
+//#include "boolean.h"
 #include "common.h"
 
 namespace JS {
@@ -13,7 +13,7 @@ namespace JS {
             if (argumentCount < 2)
                 return JS_INVALID_REFERENCE;
 
-            std::string requireName = JS::String::FromJS(args[1]);
+            std::string requireName = JS::String(args[1]).FromJS();
 
             if (runtime->requireMap.find(requireName) != runtime->requireMap.end()) {
                 return runtime->requireMap[requireName];
@@ -38,7 +38,7 @@ namespace JS {
             if (!JS::Common::CheckArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
             if (!JS::Common::CheckArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
 
-            JS::Timeout timeout(func, time, JS::Boolean::ToJS(false));
+            JS::Timeout timeout(func, time, JS::Boolean(false));
             runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE));
 
             return timeout.object;
@@ -60,7 +60,7 @@ namespace JS {
             if (!JS::Common::CheckArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
             if (!JS::Common::CheckArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
 
-            JS::Timeout timeout(func, time, JS::Boolean::ToJS(false));
+            JS::Timeout timeout(func, time, JS::Boolean(false));
             runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE, true));
 
             return timeout.object;

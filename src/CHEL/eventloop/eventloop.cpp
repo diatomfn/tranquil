@@ -2,10 +2,6 @@
 
 #include "CHEL/common.h"
 
-#include "CHEL/boolean.h"
-#include "CHEL/object.h"
-#include "CHEL/number.h"
-
 namespace JS {
     void EventLoop::SetCallback() {
         if (JsSetPromiseContinuationCallback(PromiseCallback, this) != JsNoError)
@@ -16,7 +12,7 @@ namespace JS {
         JsValueRef global = JS::Common::GetGlobalObject();
         auto* queue = static_cast<std::queue<Task*>*>(callbackState);
 
-        JS::Timeout timeout(task, JS::Number::ToJS(0), JS::Boolean::ToJS(false));
+        JS::Timeout timeout(task, JS::Number(0.0), JS::Boolean(false));
         queue->push(new Task(timeout.object, global, JS_INVALID_REFERENCE, false));
     }
 
@@ -27,8 +23,8 @@ namespace JS {
             auto timeout = JS::Timeout(task->timeout);
 
             int currentTime = (int)(clock() / (CLOCKS_PER_SEC / (double)1000));
-            if (!JS::Boolean::FromJS(timeout._destroyed)) {
-                if (currentTime-task->time > JS::Number::FromJS(timeout._repeat)) {
+            if (!JS::Boolean(timeout._destroyed).FromJS()) {
+                if (currentTime-task->time > (int)(JS::Number(timeout._repeat).FromJS())) {
                     task->Invoke();
                     if (task->repeat) {
                         task->time = currentTime;

@@ -9,9 +9,7 @@
 #include "CHEL/bindings.h"
 
 // Types
-#include "CHEL/string.h"
-#include "CHEL/object.h"
-#include "CHEL/number.h"
+#include "CHEL/types/types.h"
 
 // Exceptions
 #include "CHEL/FatalRuntimeException.h"

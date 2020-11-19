@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pch.h"
+#include "types/value.h"
 
 // Eye candy for methods
 #define METHOD_BIND(T, F) [](JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) -> void* { \
@@ -10,6 +11,6 @@
 namespace JS {
     class Module {
     public:
-        virtual JsValueRef Init() = 0;
+        virtual JS::Value Init() = 0;
     };
 }
