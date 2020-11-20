@@ -17,10 +17,8 @@ namespace JS {
          */
         explicit Number(double number);
         /**
-         * Get a double from a JavaScript value
-         *
-         * @return number from JavaScript
+         * Get a double from a JavaScript number
          */
-        double FromJS();
+        operator double () const;
     };
 }

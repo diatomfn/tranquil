@@ -19,12 +19,6 @@ namespace JS::Common {
             throw FatalRuntimeException();
         return type;
     }
-    JsValueRef GetNewObject() {
-        JsValueRef object;
-        if (JsCreateObject(&object) != JsNoError)
-            throw FatalRuntimeException();
-        return object;
-    }
     // If JsGetPromiseState does not error then it is a promise
     bool IsPromise(JsValueRef value) {
         JsPromiseState state;
@@ -68,10 +62,17 @@ namespace JS::Common {
                 return "symbol";
         }
     }
-    bool CheckArgument(JsValueRef value, JsValueType type, bool exception) {
+    bool AssertArgument(JsValueRef value, JsValueType type, bool exception) {
         if (JS::Common::GetType(value) != type) {
             if (exception)
                 JS::Runtime::ThrowException(std::string("Argument type is invalid, expected ").append(JS::Common::GetTypeString(type)).c_str());
+            return false;
+        }
+        return true;
+    }
+    bool AssertConstructor(bool constructor, bool wanted, bool exception) {
+        if (constructor != wanted) {
+            JS::Runtime::ThrowException("Class constructor cannot be called without the new keyword");
             return false;
         }
         return true;

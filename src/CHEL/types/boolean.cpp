@@ -5,7 +5,8 @@ namespace JS {
         if (JsBoolToBoolean(boolean, &this->value) != JsNoError)
             throw FatalRuntimeException();
     }
-    bool Boolean::FromJS() {
+
+    Boolean::operator bool() const {
         bool ret;
         if (JsBooleanToBool(this->value, &ret) != JsNoError)
             throw FatalRuntimeException();

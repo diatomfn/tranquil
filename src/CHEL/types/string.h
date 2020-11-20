@@ -16,10 +16,8 @@ namespace JS {
          */
         explicit String(const char* string);
         /**
-         * Get a C++ string from a JavaScript value
-         *
-         * @return a string
+         * Get a C++ string from a JavaScript string
          */
-        std::string FromJS();
+        operator std::string () const;
     };
 }

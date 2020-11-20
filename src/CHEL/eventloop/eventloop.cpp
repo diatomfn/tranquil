@@ -23,8 +23,8 @@ namespace JS {
             auto timeout = JS::Timeout(task->timeout);
 
             int currentTime = (int)(clock() / (CLOCKS_PER_SEC / (double)1000));
-            if (!JS::Boolean(timeout._destroyed).FromJS()) {
-                if (currentTime-task->time > (int)(JS::Number(timeout._repeat).FromJS())) {
+            if (!JS::Boolean(timeout._destroyed)) {
+                if (currentTime-task->time > (int)((double)JS::Number(timeout._repeat))) {
                     task->Invoke();
                     if (task->repeat) {
                         task->time = currentTime;

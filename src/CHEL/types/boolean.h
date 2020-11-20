@@ -18,9 +18,7 @@ namespace JS {
         explicit Boolean(bool boolean);
         /**
          * Get a bool from a JavaScript value
-         *
-         * @return number from JavaScript
          */
-        bool FromJS();
+        operator bool () const;
     };
 }

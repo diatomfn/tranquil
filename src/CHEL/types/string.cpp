@@ -6,7 +6,7 @@ namespace JS {
             throw FatalRuntimeException();
     }
 
-    std::string String::FromJS() {
+    String::operator std::string() const {
         JsValueRef stringValue;
 
         if (JsConvertValueToString(this->value, &stringValue) != JsNoError)

@@ -25,7 +25,7 @@ namespace JS {
 
     bool Timeout::Destroyed() const {
         JS::Object obj(this->object);
-        return JS::Boolean(obj.GetProperty("_destroyed")).FromJS();
+        return JS::Boolean(obj.GetProperty("_destroyed"));
     }
 
     void Timeout::SetRepeat(int repeat) const {

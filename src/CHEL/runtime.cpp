@@ -55,8 +55,8 @@ namespace JS {
             JsValueRef messageValue = (JsValueRef)exception.GetProperty("message");
             JsValueRef lineValue = (JsValueRef)exceptionMeta.GetProperty("line");
 
-            std::string message = JS::String(lineValue).FromJS();
-            int line = (int)JS::Number(lineValue).FromJS();
+            std::string message = JS::String(messageValue);
+            int line = (int)(double)JS::Number(lineValue);
 
             // Push the error to the log
             logOutput.Push(message, Output::LogType::ERROR, line);

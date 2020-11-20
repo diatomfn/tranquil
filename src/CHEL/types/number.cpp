@@ -6,7 +6,7 @@ namespace JS {
             throw FatalRuntimeException();
     }
 
-    double Number::FromJS() {
+    Number::operator double() const {
         double num = 0;
 
         if (JsNumberToDouble(this->value, &num) != JsNoError)

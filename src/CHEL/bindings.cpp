@@ -13,7 +13,7 @@ namespace JS {
             if (argumentCount < 2)
                 return JS_INVALID_REFERENCE;
 
-            std::string requireName = JS::String(args[1]).FromJS();
+            std::string requireName = JS::String(args[1]);
 
             if (runtime->requireMap.find(requireName) != runtime->requireMap.end()) {
                 return runtime->requireMap[requireName];
@@ -35,8 +35,8 @@ namespace JS {
             JsValueRef func = args[1];
             JsValueRef time = args[2];
 
-            if (!JS::Common::CheckArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
-            if (!JS::Common::CheckArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
+            if (!JS::Common::AssertArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
+            if (!JS::Common::AssertArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
 
             JS::Timeout timeout(func, time, JS::Boolean(false));
             runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE));
@@ -57,8 +57,8 @@ namespace JS {
             JsValueRef func = args[1];
             JsValueRef time = args[2];
 
-            if (!JS::Common::CheckArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
-            if (!JS::Common::CheckArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
+            if (!JS::Common::AssertArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
+            if (!JS::Common::AssertArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
 
             JS::Timeout timeout(func, time, JS::Boolean(false));
             runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE, true));
@@ -74,7 +74,7 @@ namespace JS {
             if (isConstructCall || argumentCount < 2)
                 return JS_INVALID_REFERENCE;
 
-            if (!JS::Common::CheckArgument(args[1], JsObject, false)) return JS_INVALID_REFERENCE;
+            if (!JS::Common::AssertArgument(args[1], JsObject, false)) return JS_INVALID_REFERENCE;
 
             Timeout timeout(args[1]);
             timeout.Destroy();
