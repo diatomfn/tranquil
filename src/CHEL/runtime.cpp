@@ -2,10 +2,6 @@
 
 #include "FatalRuntimeException.h"
 
-//// Include JS type wrappers
-//#include "number.h"
-//#include "string.h"
-//#include "object.h"
 #include "types/types.h"
 #include "native.h"
 #include "common.h"
@@ -78,9 +74,10 @@ namespace JS {
 
             // Set return to result
             global.SetProperty(name, value);
-        } else {
-            this->requireMap.insert(std::pair<std::string, JsValueRef>(std::string(name), value));
         }
+
+        // Put in requiremap regardless of global or not
+        this->requireMap.insert(std::pair<std::string, JsValueRef>(std::string(name), value));
     }
 
     void Runtime::RegisterBindings() {

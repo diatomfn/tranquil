@@ -11,25 +11,32 @@ namespace JS::Common {
     bool IsPromise(JsValueRef value);
     JsValueRef CreateFunction(JsNativeFunction function, void* callbackState);
     JsValueType GetType(JsValueRef value);
+    /**
+     * @brief Get the type of a JS value as a string
+     * 
+     * @param type the javascript value
+     * 
+     * @return the type of the value as a string
+     */
     const char* GetTypeString(JsValueType type);
-    /*
-     * Assert function for checking function arguments
+    /**
+     * @brief Assert function for checking function arguments
      *
      * @param value the function argument
-     * @param type the expected function type
+     * @param type the expected value type
      * @param exception should assertion fail throw a JavaScript exception
      *
-     * @return returns assertion result
+     * @return false if assertion errored and true if succeeded
      */
     bool AssertArgument(JsValueRef value, JsValueType type, bool exception);
-    /*
-     * Assert function for checking if function is a constructor
+    /**
+     * @brief Assert function for checking if function is a constructor
      *
      * @param constructor the constructor bool from the function
-     * @param wanted if it is expected to be a constructor
+     * @param wanted should the function be a constructor
      * @param exception should assertion fail throw a JavaScript exception
      *
-     * @return returns assertion result
+     * @return false if assertion errored and true if succeeded
      */
     bool AssertConstructor(bool constructor, bool wanted, bool exception);
 }
