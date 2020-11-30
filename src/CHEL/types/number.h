@@ -10,15 +10,12 @@ namespace JS {
     public:
         using Value::Value;
         using Value::operator JsValueRef;
-        /*
-         * Create a JavaScript number from a double
+        /**
+         * @brief Create a JavaScript number from a double
          *
-         * @param string a cstring value, cannot be null
+         * @param double
          */
         explicit Number(double number);
-        /**
-         * Get a double from a JavaScript number
-         */
         operator double () const;
     };
 }

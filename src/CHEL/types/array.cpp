@@ -5,10 +5,16 @@
 namespace JS {
     Array::Array(JsValueRef value) {
         this->value = value;
-        this->GetArrayBindings();
+        this->GetBindings();
     }
 
-    JsValueRef Array::Push(JsValueRef value) {
+    Array::Array() {
+        if (JsCreateArray(0, &this->value) != JsNoError)
+            throw FatalRuntimeException();
+        this->GetBindings();
+    }
+
+    JS::Value Array::Push(JsValueRef value) {
         JsValueRef arguments[] = {this->value, value};
 
         JsValueRef result;
@@ -16,24 +22,25 @@ namespace JS {
         if (JsCallFunction(this->push, arguments, 2, &result) != JsNoError)
             throw FatalRuntimeException();
 
-        return this->length;
+        return JS::Value(this->length);
     }
-        
-    // JsValueRef Native::JSONParse(JsValueRef string) {
-    //     JsValueRef arguments[] = {JS::Common::GetUndefined(), string};
 
-    //     JsValueRef result;
+    JS::Value Array::Pop() {
+        JsValueRef arguments[] = {this->value};
 
-    //     if (JsCallFunction(Native::jsonParse, arguments, 2, &result) != JsNoError)
-    //         throw FatalRuntimeException();
+        JsValueRef result;
 
-    //     return result;
-    // }
+        if (JsCallFunction(this->pop, arguments, 1, &result) != JsNoError)
+            throw FatalRuntimeException();
 
-    void Array::GetArrayBindings() {
+        return JS::Value(result);
+    }
+
+    void Array::GetBindings() {
         JS::Object obj(this->value);
 
         this->length = obj.GetProperty("length");
         this->push = obj.GetProperty("push");
+        this->pop = obj.GetProperty("pop");
     }
 }

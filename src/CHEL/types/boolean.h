@@ -11,14 +11,11 @@ namespace JS {
         using Value::Value;
         using Value::operator JsValueRef;
         /**
-         * Create a JavaScript boolean from a bool
+         * @brief Create a JavaScript boolean from a bool
          *
          * @param string a cstring value, cannot be null
          */
         explicit Boolean(bool boolean);
-        /**
-         * Get a bool from a JavaScript value
-         */
         operator bool () const;
     };
 }

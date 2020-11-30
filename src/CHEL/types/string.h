@@ -10,14 +10,11 @@ namespace JS {
         using Value::Value;
         using Value::operator JsValueRef;
         /**
-         * Create a JavaScript string from a cstring
+         * @brief Create a JavaScript string from a cstring
          *
          * @param string a cstring value, cannot be null
          */
         explicit String(const char* string);
-        /**
-         * Get a C++ string from a JavaScript string
-         */
         operator std::string () const;
     };
 }
