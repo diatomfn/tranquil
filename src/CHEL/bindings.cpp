@@ -1,8 +1,6 @@
 #include "bindings.h"
 
 #include "runtime.h"
-//#include "string.h"
-//#include "boolean.h"
 #include "common.h"
 
 namespace JS {

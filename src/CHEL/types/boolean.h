@@ -10,7 +10,7 @@ namespace JS {
     public:
         using Value::Value;
         using Value::operator JsValueRef;
-        /*
+        /**
          * Create a JavaScript boolean from a bool
          *
          * @param string a cstring value, cannot be null

@@ -60,6 +60,8 @@ namespace JS::Common {
                 return "dataview";
             case JsSymbol:
                 return "symbol";
+            default:
+                return "value";
         }
     }
     bool AssertArgument(JsValueRef value, JsValueType type, bool exception) {

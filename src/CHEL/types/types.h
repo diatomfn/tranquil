@@ -5,3 +5,4 @@
 #include "string.h"
 #include "value.h"
 #include "boolean.h"
+#include "array.h"
