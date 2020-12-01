@@ -5,6 +5,7 @@
 
 #include "value.h"
 #include "object.h"
+#include "number.h"
 
 namespace JS {
     class Array : public Value {
@@ -36,6 +37,16 @@ namespace JS {
          * @return the element that was removed from the array 
          */
         JS::Value Pop();
+
+        /**
+         * @brief Get the length of the array
+         * 
+         * @return length
+         */
+        JS::Number Size();
+
+        JS::Value operator[] (int index);
+        JS::Value operator[] (JsValueRef index);
     private:
         /**
          * @brief Get the array method references from the Javascript object

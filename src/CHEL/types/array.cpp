@@ -3,7 +3,23 @@
 #include "CHEL/common.h"
 
 namespace JS {
+    JS::Value Array::operator[] (int index) {
+        JsValueRef result;
+        if (JsGetIndexedProperty(this->value, JS::Number(index), &result) != JsNoError)
+            throw FatalRuntimeException();
+        return JS::Value(result);
+    }
+
+    JS::Value Array::operator[] (JsValueRef index) {
+        JsValueRef result;
+        if (JsGetIndexedProperty(this->value, index, &result) != JsNoError)
+            throw FatalRuntimeException();
+        return JS::Value(result);
+    }
+
     Array::Array(JsValueRef value) {
+        if (JS::Common::GetType(value) != JsArray)
+            throw FatalRuntimeException();
         this->value = value;
         this->GetBindings();
     }
@@ -34,6 +50,10 @@ namespace JS {
             throw FatalRuntimeException();
 
         return JS::Value(result);
+    }
+
+    JS::Number Array::Size() {
+        return JS::Number(this->length);
     }
 
     void Array::GetBindings() {
