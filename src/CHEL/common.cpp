@@ -28,11 +28,11 @@ namespace JS::Common {
             return false;
         return true;
     }
-    JsValueRef CreateFunction(JsNativeFunction function, void* callbackState) {
+    JS::Value CreateFunction(JsNativeFunction function, void* callbackState) {
         JsValueRef ret;
         if (JsCreateFunction(function, callbackState, &ret) != JsNoError)
             throw FatalRuntimeException();
-        return ret;
+        return JS::Value(ret);
     }
     const char* GetTypeString(JsValueType type) {
         switch (type) {

@@ -5,11 +5,15 @@
 
 #include "runtime.h"
 
+// Allow method access to "this" in place of callbackState
+#define METHOD_BIND(T, F) [](JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) -> void* { \
+  return std::__invoke((F), static_cast<std::add_pointer_t<T>>(callbackState), call, isConstructCall, args, argumentCount); }
+
 namespace JS::Common {
     JsValueRef GetUndefined();
     JsValueRef GetGlobalObject();
     bool IsPromise(JsValueRef value);
-    JsValueRef CreateFunction(JsNativeFunction function, void* callbackState);
+    JS::Value CreateFunction(JsNativeFunction function, void* callbackState);
     JsValueType GetType(JsValueRef value);
     /**
      * @brief Get the type of a JS value as a string

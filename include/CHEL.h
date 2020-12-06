@@ -3,7 +3,7 @@
 #include "CHEL/pch.h"
 
 #include "CHEL/common.h"
-#include "CHEL/module.h"
+#include "CHEL/exceptions.h"
 #include "CHEL/native.h"
 #include "CHEL/runtime.h"
 #include "CHEL/bindings.h"

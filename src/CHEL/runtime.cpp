@@ -83,16 +83,14 @@ namespace JS {
     }
 
     void Runtime::RegisterBindings() {
-        JsValueRef globalRef = JS::Common::GetGlobalObject();
-        JS::Object global(globalRef);
-
-        global.SetProperty("require", Bindings::NativeRequire, this);
-        global.SetProperty("setTimeout", Bindings::NativeSetTimeout, this);
-        global.SetProperty("setInterval", Bindings::NativeSetInterval, this);
+        //this->Register("require", Bindings::NativeRequire, true)
+        this->Register("require", JS::Common::CreateFunction(Bindings::NativeRequire, this), true);
+        this->Register("setTimeout", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this), true);
+        this->Register("setInterval", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this), true);
 
         // Clear interval/timeout, same function with two aliases
-        global.SetProperty("clearTimeout", Bindings::NativeClearTimeout, nullptr);
-        global.SetProperty("clearInterval", Bindings::NativeClearTimeout, nullptr);
+        this->Register("clearTimeout", JS::Common::CreateFunction(Bindings::NativeClearTimeout, nullptr), true);
+        this->Register("clearInterval", JS::Common::CreateFunction(Bindings::NativeClearTimeout, nullptr), true);
     }
 
     void Runtime::ThrowException(const char *error) {

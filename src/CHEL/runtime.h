@@ -2,7 +2,6 @@
 
 #include "pch.h"
 
-#include "module.h"
 #include "types/types.h"
 
 #include "CHEL/output/log.h"
