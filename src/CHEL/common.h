@@ -29,14 +29,4 @@ namespace JS::Common {
      * @return false if assertion errored and true if succeeded
      */
     bool AssertArgument(JsValueRef value, JsValueType type, bool exception);
-    /**
-     * @brief Assert function for checking if function is a constructor
-     *
-     * @param constructor the constructor bool from the function
-     * @param wanted should the function be a constructor
-     * @param exception should assertion fail throw a JavaScript exception
-     *
-     * @return false if assertion errored and true if succeeded
-     */
-    bool AssertConstructor(bool constructor, bool wanted, bool exception);
 }

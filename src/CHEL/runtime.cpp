@@ -45,11 +45,13 @@ namespace JS {
             // Get main exception object
             JS::Object exceptionMeta(jsException);
 
-            JsValueRef exceptionValue = (JsValueRef)exceptionMeta.GetProperty("exception");
+            JsValueRef exceptionValue = exceptionMeta.GetProperty("exception");
             JS::Object exception(exceptionValue);
 
-            JsValueRef messageValue = (JsValueRef)exception.GetProperty("message");
-            JsValueRef lineValue = (JsValueRef)exceptionMeta.GetProperty("line");
+            JsValueRef messageValue = exception.GetProperty("message");
+            JsValueRef lineValue = exceptionMeta.GetProperty("line");
+
+            
 
             std::string message = JS::String(messageValue);
             int line = (int)(double)JS::Number(lineValue);
