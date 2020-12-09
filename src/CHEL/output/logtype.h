@@ -1,13 +1,8 @@
 #pragma once
 
 namespace JS::Output {
-    enum LogType {
-        LOG,
-        INFO,
-        ERROR,
-        WARN,
-        DEBUG
+    enum LogType : int {
+        OUT = 0,
+        ERR = 1,
     };
-
-    const char* GetStringLogType(LogType log_type);
 }

@@ -94,7 +94,7 @@ namespace JS {
             int col = (int)JS::Number(colValue);
 
             // Push the error to the log
-            logOutput.Push(trace, Output::LogType::ERROR, line, col);
+            logOutput.Push(trace, Output::LogType::ERR, line, col);
         }
 
         // Resolve all promises and continuation callbacks

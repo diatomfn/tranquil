@@ -36,7 +36,7 @@ namespace JS {
         int line = (int)JS::Number(lineValue);
         int col = (int)JS::Number(colValue);
 
-        this->outputLog->Push(trace, Output::LogType::ERROR, line, col);
+        this->outputLog->Push(trace, Output::LogType::ERR, line, col);
     }
 
     void EventLoop::Loop() {
