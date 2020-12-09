@@ -4,25 +4,6 @@
 #include "common.h"
 
 namespace JS {
-    JsValueRef Bindings::NativeRequire(JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) {
-        try {
-            auto* runtime = static_cast<Runtime*>(callbackState);
-
-            if (argumentCount < 2)
-                return JS_INVALID_REFERENCE;
-
-            std::string requireName = JS::String(args[1]);
-
-            if (runtime->requireMap.find(requireName) != runtime->requireMap.end()) {
-                return runtime->requireMap[requireName];
-            }
-
-            return JS_INVALID_REFERENCE;
-        } catch (...) {
-            return JS_INVALID_REFERENCE;
-        }
-    }
-
     JsValueRef Bindings::NativeSetTimeout(JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) {
         try {
             auto* runtime = static_cast<Runtime*>(callbackState);

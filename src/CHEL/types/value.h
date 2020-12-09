@@ -19,6 +19,7 @@ namespace JS {
         explicit Value();
 
         operator JsValueRef () const;
+        operator std::string () const;
     protected:
         JsValueRef value = JS_INVALID_REFERENCE;
     };

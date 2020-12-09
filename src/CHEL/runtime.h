@@ -11,19 +11,59 @@ namespace JS {
     class Runtime {
     public:
         explicit Runtime(int memoryLimit);
-
         ~Runtime();
-        JS::Output::Log Run(const std::string& script);
-        void Register(const char* name, JS::Value value, bool isGlobal);
-        Output::Log logOutput;
+        
+        /**
+         * @brief run JavaScript code in the main context
+         * 
+         * @param script the script you want to run
+         * 
+         * @return script evaluation value
+         */
+        JS::Value Run(const std::string& script);
 
+        /**
+         * @brief run JavaScript code in an isolated temporary context
+         * 
+         * @param context the object that will be used as the top level context template.
+         * After evaluation the top level context will be written to this object.
+         * 
+         * @param inheritModules should registered modules be available within this context
+         * @param script the script you want to run
+         * 
+         * @return script evaluation value
+         */
+        JS::Value RunContext(JS::Value context, bool inheritModules, const std::string& script);
+
+        /**
+         * @brief register a value into the top level module object
+         * 
+         * @param name the name of the property internally
+         * @param value the value of the property
+         */
+        void Register(const char* name, JS::Value value);
+
+        /**
+         * @brief throw an exception
+         * 
+         * @param error the exception string to throw
+         */
         static void ThrowException(const char* error);
+
+        /**
+         * @brief get the log output
+         */
+        JS::Output::Log& GetLog() { return this->logOutput; }
     private:
+        JS::Value RunBasic(const std::string& scriptName, const std::string& script);
+
         JsRuntimeHandle runtime = nullptr;
         JsContextRef context = nullptr;
 
-        std::unordered_map<std::string, JsValueRef> requireMap;
+        JS::Object modules = JS::Object(JS_INVALID_REFERENCE);
         JS::EventLoop eventLoop;
+
+        Output::Log logOutput;
 
         // Register native functions into the runtime
         void RegisterBindings();

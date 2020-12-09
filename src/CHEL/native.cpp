@@ -6,19 +6,22 @@
 namespace JS {
     thread_local JsValueRef Native::jsonStringify = JS_INVALID_REFERENCE;
     thread_local JsValueRef Native::jsonParse = JS_INVALID_REFERENCE;
+    thread_local JsValueRef Native::objectAssign = JS_INVALID_REFERENCE;
 
     void Native::Init() {
         Native::jsonStringify = GetFromJS("JSON.stringify");
         Native::jsonParse = GetFromJS("JSON.parse");
+        Native::objectAssign = GetFromJS("Object.assign");
     }
 
     JsValueRef Native::GetFromJS(const char *identifier) {
         JsValueRef toReturn = JS::String(identifier);
-
         JsValueRef name = JS::String(identifier);
 
         JsValueRef result;
-        JsRun(toReturn, 0, name, JsParseScriptAttributeNone, &result);
+
+        if (JsRun(toReturn, 0, name, JsParseScriptAttributeNone, &result) != JsNoError)
+            throw FatalRuntimeException();
 
         return result;
     }
@@ -44,7 +47,7 @@ namespace JS {
         if (JsCreateFunction(parseFormat, nullptr, &function) != JsNoError)
             throw FatalRuntimeException();
 
-        JsValueRef arguments[] = {JS::Common::GetUndefined(), object, function};
+        JsValueRef arguments[] = {JS::Value(), object, function};
 
         JsValueRef result;
 
@@ -55,11 +58,22 @@ namespace JS {
     }
 
     JsValueRef Native::JSONParse(JsValueRef string) {
-        JsValueRef arguments[] = {JS::Common::GetUndefined(), string};
+        JsValueRef arguments[] = {JS::Value(), string};
 
         JsValueRef result;
 
         if (JsCallFunction(Native::jsonParse, arguments, 2, &result) != JsNoError)
+            throw FatalRuntimeException();
+
+        return result;
+    }
+
+    JsValueRef Native::ObjectAssign(JsValueRef destination, JsValueRef from) {
+        JsValueRef arguments[] = {JS::Value(), destination, from};
+
+        JsValueRef result;
+
+        if (JsCallFunction(Native::objectAssign, arguments, 3, &result) != JsNoError)
             throw FatalRuntimeException();
 
         return result;

@@ -21,22 +21,60 @@ namespace JS {
         // Setup native function binds from JS
         Native::Init();
 
+        // Create module object
+        this->modules = JS::Object();
+
         // Register bindings from C++ to JS
         this->RegisterBindings();
 
         this->eventLoop.SetCallback();
     }
 
-    JS::Output::Log Runtime::Run(const std::string &script) {
+    JS::Value Runtime::RunContext(JS::Value context, bool inheritModules, const std::string& script) {
+        JsContextRef tempContext;
+        if (JsCreateContext(this->runtime, &tempContext) != JsNoError)
+            throw FatalRuntimeException();
+
+        // Attempt to switch to temporary context
+        if (JsSetCurrentContext(tempContext) != JsNoError) {
+            JsSetCurrentContext(this->context);
+            throw FatalRuntimeException();
+        }
+
+        // Write temporary context values
+        JsValueRef global = JS::Common::GetGlobalObject();
+
+        // Inherit module object from runtime
+        if (inheritModules)
+            JS::Native::ObjectAssign(global, this->modules);
+
+        // Inherit provided values for this
+        JS::Native::ObjectAssign(global, context);
+
+        JS::Value result = this->RunBasic("script", script);
+        
+        // Write the context back to the context object
+        JS::Native::ObjectAssign(context, global);
+
+        // Switch back to main context
         if (JsSetCurrentContext(this->context) != JsNoError)
             throw FatalRuntimeException();
 
-        JsValueRef jScript = JS::String(script.c_str());
-        JsValueRef name = JS::String("script");
+        return result;
+    }
 
+    JS::Value Runtime::Run(const std::string& script) {
+        // Inherit all requires of the require object
+        JsValueRef global = JS::Common::GetGlobalObject();
+        JS::Native::ObjectAssign(global, this->modules);
+
+        return this->RunBasic("script", script);
+    }
+
+    JS::Value Runtime::RunBasic(const std::string& scriptName, const std::string& script) {
         JsValueRef result;
 
-        if (JsRun(jScript, 0, name, JsParseScriptAttributeNone, &result) != JsNoError) {
+        if (JsRun(JS::String(script.c_str()), 0, JS::String(scriptName.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
             // Get exception object
             JsValueRef jsException;
             if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
@@ -51,8 +89,6 @@ namespace JS {
             JsValueRef messageValue = exception.GetProperty("message");
             JsValueRef lineValue = exceptionMeta.GetProperty("line");
 
-            
-
             std::string message = JS::String(messageValue);
             int line = (int)(double)JS::Number(lineValue);
 
@@ -60,9 +96,14 @@ namespace JS {
             logOutput.Push(message, Output::LogType::ERROR, line);
         }
 
+        // Resolve all promises and continuation callbacks
         this->eventLoop.Loop();
 
-        return logOutput;
+        // Return undefined if the result is empty
+        if (result == JS_INVALID_REFERENCE)
+            return JS::Value();
+
+        return JS::Value(result);
     }
 
     Runtime::~Runtime() {
@@ -70,27 +111,19 @@ namespace JS {
         JsDisposeRuntime(this->runtime);
     }
 
-    void Runtime::Register(const char *name, JS::Value value, bool isGlobal) {
-        if (isGlobal) {
-            JS::Object global(JS::Common::GetGlobalObject());
+    void Runtime::Register(const char *name, JS::Value value) {
+        JS::Object modules(this->modules);
 
-            // Set return to result
-            global.SetProperty(name, value);
-        }
-
-        // Put in requiremap regardless of global or not
-        this->requireMap.insert(std::pair<std::string, JsValueRef>(std::string(name), value));
+        modules.SetProperty(name, value);
     }
 
     void Runtime::RegisterBindings() {
-        //this->Register("require", Bindings::NativeRequire, true)
-        this->Register("require", JS::Common::CreateFunction(Bindings::NativeRequire, this), true);
-        this->Register("setTimeout", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this), true);
-        this->Register("setInterval", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this), true);
+        this->Register("setTimeout", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this));
+        this->Register("setInterval", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this));
 
         // Clear interval/timeout, same function with two aliases
-        this->Register("clearTimeout", JS::Common::CreateFunction(Bindings::NativeClearTimeout, nullptr), true);
-        this->Register("clearInterval", JS::Common::CreateFunction(Bindings::NativeClearTimeout, nullptr), true);
+        this->Register("clearTimeout", JS::Common::CreateFunction(Bindings::NativeClearTimeout, nullptr));
+        this->Register("clearInterval", JS::Common::CreateFunction(Bindings::NativeClearTimeout, nullptr));
     }
 
     void Runtime::ThrowException(const char *error) {
