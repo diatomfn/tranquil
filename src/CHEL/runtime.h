@@ -50,10 +50,7 @@ namespace JS {
          */
         static void ThrowException(const char* error);
 
-        /**
-         * @brief get the log output
-         */
-        JS::Output::Log& GetLog() { return this->logOutput; }
+        Output::Log logOutput;
     private:
         JS::Value RunBasic(const std::string& scriptName, const std::string& script);
 
@@ -62,8 +59,6 @@ namespace JS {
 
         JS::Object modules = JS::Object(JS_INVALID_REFERENCE);
         JS::EventLoop eventLoop;
-
-        Output::Log logOutput;
 
         // Register native functions into the runtime
         void RegisterBindings();
