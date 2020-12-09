@@ -10,7 +10,7 @@
 namespace JS {
     class Runtime {
     public:
-        explicit Runtime(int memoryLimit);
+        explicit Runtime(const std::string& name, int memoryLimit);
         ~Runtime();
         
         /**
@@ -30,10 +30,11 @@ namespace JS {
          * 
          * @param inheritModules should registered modules be available within this context
          * @param script the script you want to run
+         * @param name the name of the script to run
          * 
          * @return script evaluation value
          */
-        JS::Value RunContext(JS::Value context, bool inheritModules, const std::string& script);
+        JS::Value RunContext(JS::Value context, bool inheritModules, const std::string& name, const std::string& script);
 
         /**
          * @brief register a value into the top level module object
@@ -51,14 +52,16 @@ namespace JS {
         static void ThrowException(const char* error);
 
         Output::Log logOutput;
-    private:
-        JS::Value RunBasic(const std::string& scriptName, const std::string& script);
+    protected:
+        JS::Value RunBasic(const std::string& name, const std::string& script);
 
         JsRuntimeHandle runtime = nullptr;
         JsContextRef context = nullptr;
 
         JS::Object modules = JS::Object(JS_INVALID_REFERENCE);
         JS::EventLoop eventLoop;
+
+        std::string name;
 
         // Register native functions into the runtime
         void RegisterBindings();

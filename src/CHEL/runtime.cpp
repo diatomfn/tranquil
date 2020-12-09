@@ -7,7 +7,7 @@
 #include "common.h"
 
 namespace JS {
-    Runtime::Runtime(int memoryLimit) {
+    Runtime::Runtime(const std::string& name, int memoryLimit) : name(name) {
         if (JsCreateRuntime(JsRuntimeAttributeDisableFatalOnOOM, nullptr, &this->runtime) != JsNoError)
             throw FatalRuntimeException();
 
@@ -31,7 +31,7 @@ namespace JS {
         this->eventLoop.SetCallback();
     }
 
-    JS::Value Runtime::RunContext(JS::Value context, bool inheritModules, const std::string& script) {
+    JS::Value Runtime::RunContext(JS::Value context, bool inheritModules, const std::string& name, const std::string& script) {
         JsContextRef tempContext;
         if (JsCreateContext(this->runtime, &tempContext) != JsNoError)
             throw FatalRuntimeException();
@@ -52,7 +52,7 @@ namespace JS {
         // Inherit provided values for this
         JS::Native::ObjectAssign(global, context);
 
-        JS::Value result = this->RunBasic("script", script);
+        JS::Value result = this->RunBasic(name, script);
         
         // Write the context back to the context object
         JS::Native::ObjectAssign(context, global);
@@ -69,13 +69,13 @@ namespace JS {
         JsValueRef global = JS::Common::GetGlobalObject();
         JS::Native::ObjectAssign(global, this->modules);
 
-        return this->RunBasic("script", script);
+        return this->RunBasic(this->name, script);
     }
 
-    JS::Value Runtime::RunBasic(const std::string& scriptName, const std::string& script) {
+    JS::Value Runtime::RunBasic(const std::string& name, const std::string& script) {
         JsValueRef result;
 
-        if (JsRun(JS::String(script.c_str()), 0, JS::String(scriptName.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
+        if (JsRun(JS::String(script.c_str()), 0, JS::String(name.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
             // Get exception object
             JsValueRef jsException;
             if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
