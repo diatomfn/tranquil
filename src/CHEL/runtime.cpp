@@ -27,6 +27,7 @@ namespace JS {
         // Register bindings from C++ to JS
         this->RegisterBindings();
 
+        this->eventLoop.SetLog(&this->logOutput);
         this->eventLoop.SetCallback();
     }
 
@@ -82,18 +83,18 @@ namespace JS {
 
             // Get main exception object
             JS::Object exceptionMeta(jsException);
+            JS::Object exception(exceptionMeta.GetProperty("exception"));
 
-            JsValueRef exceptionValue = exceptionMeta.GetProperty("exception");
-            JS::Object exception(exceptionValue);
+            JS::Value lineValue = exceptionMeta.GetProperty("line");
+            JS::Value colValue = exceptionMeta.GetProperty("column");
+            JS::Value trace = exception.GetProperty("stack");
 
-            JsValueRef messageValue = exception.GetProperty("message");
-            JsValueRef lineValue = exceptionMeta.GetProperty("line");
-
-            std::string message = JS::String(messageValue);
-            int line = (int)(double)JS::Number(lineValue);
+            // std::string message = JS::String(messageValue);
+            int line = (int)JS::Number(lineValue);
+            int col = (int)JS::Number(colValue);
 
             // Push the error to the log
-            logOutput.Push(message, Output::LogType::ERROR, line);
+            logOutput.Push(trace, Output::LogType::ERROR, line, col);
         }
 
         // Resolve all promises and continuation callbacks

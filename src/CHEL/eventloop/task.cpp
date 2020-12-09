@@ -16,7 +16,8 @@ namespace JS {
 
     JsValueRef Task::Invoke() {
         JsValueRef ret;
-        JsCallFunction(JS::Timeout(this->timeout)._onTimeout, this->args, this->argCount, &ret);
+        if (JsCallFunction(JS::Timeout(this->timeout)._onTimeout, this->args, this->argCount, &ret) != JsNoError)
+            excepted = true;
         return ret;
     }
 

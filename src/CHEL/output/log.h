@@ -8,7 +8,7 @@ namespace JS::Output {
         std::vector<Message> messages;
 
     public:
-        void Push (std::string message, LogType logType, int line = 0);
+        void Push (std::string message, LogType logType, int line = 0, int col = 0);
         json ToJson();
     };
 }

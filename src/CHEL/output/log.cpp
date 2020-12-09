@@ -1,8 +1,8 @@
 #include "log.h"
 
 namespace JS::Output {
-    void Log::Push(std::string message, JS::Output::LogType logType, int line) {
-        Message m = Message(message, logType, line);
+    void Log::Push(std::string message, JS::Output::LogType logType, int line, int col) {
+        Message m = Message(message, logType, line, col);
 
         this->messages.push_back(m);
     }
@@ -18,6 +18,7 @@ namespace JS::Output {
 
             if (message.type == LogType::ERROR) {
                 single["line"] = message.line;
+                single["col"] = message.col;
             }
 
             list.push_back(single);

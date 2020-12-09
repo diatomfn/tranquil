@@ -7,10 +7,11 @@
 namespace JS::Output {
     class Message {
     public:
-        Message(std::string&, LogType, int);
+        Message(const std::string& message, LogType type, int line, int col);
 
         std::string message;
         LogType type;
         int line;
+        int col;
     };
 }
