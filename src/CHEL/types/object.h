@@ -16,6 +16,13 @@ namespace JS {
          */
         explicit Object();
         /**
+         * @brief Retrieve global object from current runtime thread
+         * Must have a current runtime active
+         * 
+         * @return JS::Object global object 
+         */
+        static JS::Object GetGlobalObject();
+        /**
          * @brief Get a property of a JavaScript object
          *
          * @param key the key of the property

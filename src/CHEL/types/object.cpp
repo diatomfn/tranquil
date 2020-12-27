@@ -54,4 +54,11 @@ namespace JS {
 
         JsObjectSetProperty(this->value, jKey, function, true);
     }
+
+    JS::Object JS::Object::GetGlobalObject() {
+       JsValueRef global;
+        if (JsGetGlobalObject(&global) != JsNoError)
+            throw FatalRuntimeException();
+        return JS::Object(global); 
+    }
 }

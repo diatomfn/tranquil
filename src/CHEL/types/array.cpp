@@ -18,7 +18,7 @@ namespace JS {
     }
 
     Array::Array(JsValueRef value) {
-        if (JS::Common::GetType(value) != JsArray)
+        if (JS::Value::GetType(value) != JsArray)
             throw FatalRuntimeException();
         this->value = value;
         this->GetBindings();

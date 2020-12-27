@@ -9,6 +9,7 @@ namespace JS {
     thread_local JsValueRef Native::objectAssign = JS_INVALID_REFERENCE;
 
     void Native::Init() {
+        // Copy native functions from runtime before user can change references
         Native::jsonStringify = GetFromJS("JSON.stringify");
         Native::jsonParse = GetFromJS("JSON.parse");
         Native::objectAssign = GetFromJS("Object.assign");

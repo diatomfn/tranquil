@@ -13,7 +13,7 @@ namespace JS {
     }
 
     void EventLoop::PromiseCallback(JsValueRef task, void* callbackState) {
-        JsValueRef global = JS::Common::GetGlobalObject();
+        JS::Object global = JS::Object::GetGlobalObject();
         auto* queue = static_cast<std::queue<Task*>*>(callbackState);
 
         JS::Timeout timeout(task, JS::Number(0.0), JS::Boolean(false));

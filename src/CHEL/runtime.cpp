@@ -43,7 +43,7 @@ namespace JS {
         }
 
         // Write temporary context values
-        JsValueRef global = JS::Common::GetGlobalObject();
+        JS::Object global = JS::Object::GetGlobalObject();
 
         // Inherit module object from runtime
         if (inheritModules)
@@ -66,7 +66,7 @@ namespace JS {
 
     JS::Value Runtime::Run(const std::string& script) {
         // Inherit all requires of the require object
-        JsValueRef global = JS::Common::GetGlobalObject();
+        JS::Object global = JS::Object::GetGlobalObject();
         JS::Native::ObjectAssign(global, this->modules);
 
         return this->RunBasic(this->name, script);

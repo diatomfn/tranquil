@@ -5,7 +5,7 @@
 
 namespace JS::Exceptions {
     void InvalidArgument(JsValueType type) {
-        JS::Runtime::ThrowException(fmt::format("Argument type is invalid, expected {}", JS::Common::GetTypeString(type)).c_str());
+        JS::Runtime::ThrowException(fmt::format("Argument type is invalid, expected {}", JS::Value::GetTypeString(type)).c_str());
     }
     
     void ClassNewKeyword(const char* className) {
