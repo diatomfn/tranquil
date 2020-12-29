@@ -3,13 +3,9 @@
 #include "CHEL/common.h"
 
 namespace JS {
-    void EventLoop::SetCallback() {
+    void EventLoop::InitPromiseCallback() {
         if (JsSetPromiseContinuationCallback(PromiseCallback, this) != JsNoError)
             throw FatalRuntimeException();
-    }
-
-    void EventLoop::SetLog(Output::Log* log) {
-        this->outputLog = log;
     }
 
     void EventLoop::PromiseCallback(JsValueRef task, void* callbackState) {
@@ -26,17 +22,23 @@ namespace JS {
         if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
             throw FatalRuntimeException();
 
-        JS::Object exceptionMeta(jsException);
-        JS::Object exception(exceptionMeta.GetProperty("exception"));
+        this->errorCallback(JS::Value(jsException));
 
-        JS::Value lineValue = exceptionMeta.GetProperty("line");
-        JS::Value colValue = exceptionMeta.GetProperty("column");
-        JS::Value trace = exception.GetProperty("stack");
+        // JS::Object exceptionMeta(jsException);
+        // JS::Object exception(exceptionMeta.GetProperty("exception"));
 
-        int line = (int)JS::Number(lineValue);
-        int col = (int)JS::Number(colValue);
+        // JS::Value lineValue = exceptionMeta.GetProperty("line");
+        // JS::Value colValue = exceptionMeta.GetProperty("column");
+        // JS::Value trace = exception.GetProperty("stack");
 
-        this->outputLog->Push(trace, Output::LogType::ERR, line, col);
+        // int line = (int)JS::Number(lineValue);
+        // int col = (int)JS::Number(colValue);
+
+        //this->outputLog->Push(trace, Output::LogType::ERR, line, col);
+    }
+
+    void EventLoop::SetErrorCallback(std::function<void(JS::Value)> callback) {
+        this->errorCallback = callback;
     }
 
     void EventLoop::Loop() {

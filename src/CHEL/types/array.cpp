@@ -18,16 +18,13 @@ namespace JS {
     }
 
     Array::Array(JsValueRef value) {
-        if (JS::Value::GetType(value) != JsArray)
-            throw FatalRuntimeException();
         this->value = value;
-        this->GetBindings();
     }
 
     Array::Array() {
         if (JsCreateArray(0, &this->value) != JsNoError)
             throw FatalRuntimeException();
-        this->GetBindings();
+        this->SetupBindings();
     }
 
     JS::Value Array::Push(JsValueRef value) {
@@ -52,11 +49,11 @@ namespace JS {
         return JS::Value(result);
     }
 
-    JS::Number Array::Size() {
+    JS::Number Array::Length() {
         return JS::Number(this->length);
     }
 
-    void Array::GetBindings() {
+    void Array::SetupBindings() {
         JS::Object obj(this->value);
 
         this->length = obj.GetProperty("length");

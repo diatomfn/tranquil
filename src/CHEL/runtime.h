@@ -4,7 +4,6 @@
 
 #include "types/types.h"
 
-#include "CHEL/output/log.h"
 #include "CHEL/eventloop/eventloop.h"
 
 namespace JS {
@@ -51,7 +50,12 @@ namespace JS {
          */
         static void ThrowException(const char* error);
 
-        Output::Log logOutput;
+        /**
+         * @brief Set the function to be called on exceptions
+         * 
+         * @param callback the function to execute
+         */
+        void SetErrorCallback(std::function<void(JS::Value)> callback);
     protected:
         JS::Value RunBasic(const std::string& name, const std::string& script);
 
@@ -62,6 +66,8 @@ namespace JS {
         JS::EventLoop eventLoop;
 
         std::string name;
+
+        std::function<void(JS::Value)> errorCallback = nullptr;
 
         // Register native functions into the runtime
         void RegisterBindings();

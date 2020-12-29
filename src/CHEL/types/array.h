@@ -10,6 +10,7 @@
 namespace JS {
     class Array : public Value {
     public:
+        using Value::Value;
         using Value::operator JsValueRef;
         /**
          * @brief Construct an Array object wrapper from a Javascript value
@@ -22,6 +23,12 @@ namespace JS {
          * @brief Construct an empty Javascript Array object
          */
         Array();
+
+        /**
+         * @brief Setup the method references for an array object
+         * Only required if array is constructed with an existing Js value
+         */
+        void SetupBindings();
 
         /**
          * @brief Push a value to the Javascript array
@@ -43,16 +50,11 @@ namespace JS {
          * 
          * @return length
          */
-        JS::Number Size();
+        JS::Number Length();
 
         JS::Value operator[] (int index);
         JS::Value operator[] (JsValueRef index);
     private:
-        /**
-         * @brief Get the array method references from the Javascript object
-         */
-        void GetBindings();
-
         JsValueRef length;
         JsValueRef push;
         JsValueRef pop;

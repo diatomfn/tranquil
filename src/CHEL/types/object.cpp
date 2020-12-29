@@ -31,8 +31,7 @@ namespace JS {
     }
 
     void Object::SetProperty(const char *key, JsValueRef value) const {
-        JS::String jsKey(key);
-        if (JsObjectSetProperty(this->value, jsKey, value, false) != JsNoError)
+        if (JsObjectSetProperty(this->value, JS::String(key), value, false) != JsNoError)
             throw FatalRuntimeException();
     }
 

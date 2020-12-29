@@ -21,14 +21,13 @@ namespace JS {
         // Setup native function binds from JS
         Native::Init();
 
-        // Create module object
+        // Initialize object members
         this->modules = JS::Object();
 
         // Register bindings from C++ to JS
         this->RegisterBindings();
 
-        this->eventLoop.SetLog(&this->logOutput);
-        this->eventLoop.SetCallback();
+        this->eventLoop.InitPromiseCallback();
     }
 
     JS::Value Runtime::RunContext(JS::Value context, bool inheritModules, const std::string& name, const std::string& script) {
@@ -81,20 +80,28 @@ namespace JS {
             if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
                 throw FatalRuntimeException();
 
-            // Get main exception object
-            JS::Object exceptionMeta(jsException);
-            JS::Object exception(exceptionMeta.GetProperty("exception"));
+            if (this->errorCallback != nullptr) {
+                this->errorCallback(JS::Value(jsException));
+            }
 
-            JS::Value lineValue = exceptionMeta.GetProperty("line");
-            JS::Value colValue = exceptionMeta.GetProperty("column");
-            JS::Value trace = exception.GetProperty("stack");
+            // // Get main exception object
+            // JS::Object exceptionMeta(jsException);
+            // JS::Object exception(exceptionMeta.GetProperty("exception"));
 
-            // std::string message = JS::String(messageValue);
-            int line = (int)JS::Number(lineValue);
-            int col = (int)JS::Number(colValue);
+            // JS::Value lineValue = exceptionMeta.GetProperty("line");
+            // JS::Value colValue = exceptionMeta.GetProperty("column");
+            // JS::Value trace = exception.GetProperty("stack");
 
-            // Push the error to the log
-            logOutput.Push(trace, Output::LogType::ERR, line, col);
+            // // std::string message = JS::String(messageValue);
+            // int line = (int)JS::Number(lineValue);
+            // int col = (int)JS::Number(colValue);
+
+            // // Push the error to the log
+            // logOutput.Push(trace, Output::LogType::ERR, line, col);
+        }
+
+        if (this->errorCallback != nullptr) {
+            this->eventLoop.SetErrorCallback(this->errorCallback);
         }
 
         // Resolve all promises and continuation callbacks
@@ -132,5 +139,9 @@ namespace JS {
         JsValueRef errorObject;
         if (JsCreateError(value, &errorObject) != JsNoError) return;
         if (JsSetException(errorObject) != JsNoError) return;
+    }
+
+    void Runtime::SetErrorCallback(std::function<void(JS::Value)> callback) {
+        this->errorCallback = callback;
     }
 }

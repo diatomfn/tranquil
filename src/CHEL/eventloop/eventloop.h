@@ -6,7 +6,6 @@
 #include "task.h"
 
 #include "CHEL/types/types.h"
-#include "CHEL/output/log.h"
 
 namespace JS {
     // Declare to prevent include loop
@@ -14,18 +13,23 @@ namespace JS {
 
     class EventLoop {
     public:
-        void SetCallback();
         void Loop();
-        void SetLog(Output::Log* log);
+
+        /**
+         * @brief Set the function to be called on exceptions
+         * 
+         * @param callback the function to execute
+         */
+        void SetErrorCallback(std::function<void(JS::Value)> callback);
     private:
+        void InitPromiseCallback();
         static void PromiseCallback(JsValueRef task, void* callbackState);
 
         void HandleException(JsValueRef except);
 
         std::queue<Task*> taskQueue;
 
-        // Needed for exception logging within tasks
-        Output::Log* outputLog;
+        std::function<void(JS::Value)> errorCallback = nullptr;
 
         friend class Runtime;
         friend class Bindings;

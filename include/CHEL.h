@@ -18,8 +18,3 @@
 #include "CHEL/eventloop/eventloop.h"
 #include "CHEL/eventloop/task.h"
 #include "CHEL/eventloop/timeout.h"
-
-// Output
-#include "CHEL/output/log.h"
-#include "CHEL/output/logtype.h"
-#include "CHEL/output/message.h"
