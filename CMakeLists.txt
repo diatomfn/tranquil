@@ -18,5 +18,4 @@ target_precompile_headers(CHEL PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src/CHEL/pch.h)
 
 # Add libraries
 target_link_libraries(CHEL PUBLIC chakracore)
-target_link_libraries(CHEL PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(CHEL PRIVATE fmt::fmt-header-only)

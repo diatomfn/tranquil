@@ -91,6 +91,6 @@ namespace JS {
     }
 
     const char* Value::GetTypeString() {
-        JS::Value::GetTypeString(this->value);
+        return JS::Value::GetTypeString(this->value);
     }
 }

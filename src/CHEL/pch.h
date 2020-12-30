@@ -4,8 +4,7 @@
 #include <string>
 #include <sstream>
 #include <queue>
+#include <functional>
+#include <cstring>
 
 #include <ChakraCore.h>
-
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
