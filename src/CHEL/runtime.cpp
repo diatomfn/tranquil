@@ -7,7 +7,7 @@
 #include "common.h"
 
 namespace JS {
-    Runtime::Runtime(const std::string& name, int memoryLimit) : name(name) {
+    Runtime::Runtime(const std::string& name, int memoryLimit) {
         if (JsCreateRuntime(JsRuntimeAttributeDisableFatalOnOOM, nullptr, &this->runtime) != JsNoError)
             throw FatalRuntimeException();
 
@@ -41,7 +41,6 @@ namespace JS {
             throw FatalRuntimeException();
         }
 
-        // Write temporary context values
         JS::Object global = JS::Object::GetGlobalObject();
 
         // Inherit module object from runtime
@@ -63,12 +62,37 @@ namespace JS {
         return result;
     }
 
-    JS::Value Runtime::Run(const std::string& script) {
+    JS::Value Runtime::RunContext(const std::string& name, const std::string& script) {
+        JsContextRef tempContext;
+        if (JsCreateContext(this->runtime, &tempContext) != JsNoError)
+            throw FatalRuntimeException();
+
+        // Attempt to switch to temporary context
+        if (JsSetCurrentContext(tempContext) != JsNoError) {
+            JsSetCurrentContext(this->context);
+            throw FatalRuntimeException();
+        }
+
+        JS::Object global = JS::Object::GetGlobalObject();
+
+        // Inherit module object from runtime
+        JS::Native::ObjectAssign(global, this->modules);
+
+        JS::Value result = this->RunBasic(name, script);
+
+        // Switch back to main context
+        if (JsSetCurrentContext(this->context) != JsNoError)
+            throw FatalRuntimeException();
+
+        return result;
+    }
+
+    JS::Value Runtime::Run(const std::string& name, const std::string& script) {
         // Inherit all requires of the require object
         JS::Object global = JS::Object::GetGlobalObject();
         JS::Native::ObjectAssign(global, this->modules);
 
-        return this->RunBasic(this->name, script);
+        return this->RunBasic(name, script);
     }
 
     JS::Value Runtime::RunBasic(const std::string& name, const std::string& script) {
@@ -77,27 +101,12 @@ namespace JS {
         if (JsRun(JS::String(script.c_str()), 0, JS::String(name.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
             // Get exception object
             JsValueRef jsException;
-            if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
+            if (JsGetAndClearException(&jsException) != JsNoError)
                 throw FatalRuntimeException();
 
             if (this->errorCallback != nullptr) {
-                this->errorCallback(JS::Value(jsException));
+                this->errorCallback(JS::Object(jsException));
             }
-
-            // // Get main exception object
-            // JS::Object exceptionMeta(jsException);
-            // JS::Object exception(exceptionMeta.GetProperty("exception"));
-
-            // JS::Value lineValue = exceptionMeta.GetProperty("line");
-            // JS::Value colValue = exceptionMeta.GetProperty("column");
-            // JS::Value trace = exception.GetProperty("stack");
-
-            // // std::string message = JS::String(messageValue);
-            // int line = (int)JS::Number(lineValue);
-            // int col = (int)JS::Number(colValue);
-
-            // // Push the error to the log
-            // logOutput.Push(trace, Output::LogType::ERR, line, col);
         }
 
         if (this->errorCallback != nullptr) {
@@ -141,7 +150,7 @@ namespace JS {
         if (JsSetException(errorObject) != JsNoError) return;
     }
 
-    void Runtime::SetErrorCallback(std::function<void(JS::Value)> callback) {
+    void Runtime::SetErrorCallback(std::function<void(JS::Object)> callback) {
         this->errorCallback = callback;
     }
 }

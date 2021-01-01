@@ -22,7 +22,7 @@ namespace JS {
         if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
             throw FatalRuntimeException();
 
-        this->errorCallback(JS::Value(jsException));
+        this->errorCallback(JS::Object(jsException));
 
         // JS::Object exceptionMeta(jsException);
         // JS::Object exception(exceptionMeta.GetProperty("exception"));
@@ -37,7 +37,7 @@ namespace JS {
         //this->outputLog->Push(trace, Output::LogType::ERR, line, col);
     }
 
-    void EventLoop::SetErrorCallback(std::function<void(JS::Value)> callback) {
+    void EventLoop::SetErrorCallback(std::function<void(JS::Object)> callback) {
         this->errorCallback = callback;
     }
 

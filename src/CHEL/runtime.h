@@ -19,7 +19,7 @@ namespace JS {
          * 
          * @return script evaluation value
          */
-        JS::Value Run(const std::string& script);
+        JS::Value Run(const std::string& name, const std::string& script);
 
         /**
          * @brief run JavaScript code in an isolated temporary context
@@ -31,9 +31,19 @@ namespace JS {
          * @param script the script you want to run
          * @param name the name of the script to run
          * 
-         * @return script evaluation value
+         * @return script evaluation
          */
         JS::Value RunContext(JS::Value context, bool inheritModules, const std::string& name, const std::string& script);
+
+        /**
+         * @brief like the Run method but in an isolated temporary context
+         * 
+         * @param name the name of the script
+         * @param script the script source code
+         * 
+         * @return script evaluation
+         */
+        JS::Value RunContext(const std::string& name, const std::string& script);
 
         /**
          * @brief register a value into the top level module object
@@ -55,7 +65,7 @@ namespace JS {
          * 
          * @param callback the function to execute
          */
-        void SetErrorCallback(std::function<void(JS::Value)> callback);
+        void SetErrorCallback(std::function<void(JS::Object)> callback);
     protected:
         JS::Value RunBasic(const std::string& name, const std::string& script);
 
@@ -65,9 +75,7 @@ namespace JS {
         JS::Object modules = JS::Object(JS_INVALID_REFERENCE);
         JS::EventLoop eventLoop;
 
-        std::string name;
-
-        std::function<void(JS::Value)> errorCallback = nullptr;
+        std::function<void(JS::Object)> errorCallback = nullptr;
 
         // Register native functions into the runtime
         void RegisterBindings();

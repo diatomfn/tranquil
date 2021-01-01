@@ -15,7 +15,6 @@ namespace JS {
         this->_onTimeout = this->object.GetProperty("_onTimeout");
         this->_repeat = this->object.GetProperty("_repeat");
         this->_destroyed = this->object.GetProperty("_destroyed");
-
     }
 
     void Timeout::Destroy() const {

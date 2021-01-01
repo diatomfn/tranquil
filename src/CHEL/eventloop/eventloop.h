@@ -20,7 +20,7 @@ namespace JS {
          * 
          * @param callback the function to execute
          */
-        void SetErrorCallback(std::function<void(JS::Value)> callback);
+        void SetErrorCallback(std::function<void(JS::Object)> callback);
     private:
         void InitPromiseCallback();
         static void PromiseCallback(JsValueRef task, void* callbackState);
@@ -29,7 +29,7 @@ namespace JS {
 
         std::queue<Task*> taskQueue;
 
-        std::function<void(JS::Value)> errorCallback = nullptr;
+        std::function<void(JS::Object)> errorCallback = nullptr;
 
         friend class Runtime;
         friend class Bindings;
