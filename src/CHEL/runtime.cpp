@@ -7,7 +7,7 @@
 #include "common.h"
 
 namespace JS {
-    Runtime::Runtime(const std::string& name, int memoryLimit) {
+    Runtime::Runtime(int memoryLimit) {
         if (JsCreateRuntime(JsRuntimeAttributeDisableFatalOnOOM, nullptr, &this->runtime) != JsNoError)
             throw FatalRuntimeException();
 

@@ -9,7 +9,7 @@
 namespace JS {
     class Runtime {
     public:
-        explicit Runtime(const std::string& name, int memoryLimit);
+        explicit Runtime(int memoryLimit);
         ~Runtime();
         
         /**
