@@ -3,6 +3,8 @@
 #include "string.h"
 #include "common.h"
 
+#include "runtime.h"
+
 namespace JS {
     thread_local JsValueRef Native::jsonStringify = JS_INVALID_REFERENCE;
     thread_local JsValueRef Native::jsonParse = JS_INVALID_REFERENCE;
@@ -21,7 +23,7 @@ namespace JS {
 
         JsValueRef result;
 
-        if (JsRun(toReturn, 0, name, JsParseScriptAttributeNone, &result) != JsNoError)
+        if (JsRun(toReturn, Runtime::contextNumber++, name, JsParseScriptAttributeNone, &result) != JsNoError)
             throw FatalRuntimeException();
 
         return result;

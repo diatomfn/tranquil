@@ -7,11 +7,15 @@
 #include "CHEL/eventloop/eventloop.h"
 
 namespace JS {
+    /* 
+     * Only one runtime must exist at one time per thread.
+     * You may create more than one but undesired effects will occur
+     */
     class Runtime {
     public:
         explicit Runtime(int memoryLimit);
         ~Runtime();
-        
+
         /**
          * @brief run JavaScript code in the main context
          * 
@@ -19,7 +23,7 @@ namespace JS {
          * 
          * @return script evaluation value
          */
-        JS::Value Run(const std::string& name, const std::string& script);
+        JS::Value Run(const std::string &name, const std::string &script);
 
         /**
          * @brief run JavaScript code in an isolated temporary context
@@ -33,7 +37,7 @@ namespace JS {
          * 
          * @return script evaluation
          */
-        JS::Value RunContext(JS::Value context, bool inheritModules, const std::string& name, const std::string& script);
+        JS::Value RunContext(JS::Value context, bool inheritModules, const std::string &name, const std::string &script);
 
         /**
          * @brief like the Run method but in an isolated temporary context
@@ -43,7 +47,7 @@ namespace JS {
          * 
          * @return script evaluation
          */
-        JS::Value RunContext(const std::string& name, const std::string& script);
+        JS::Value RunContext(const std::string &name, const std::string &script);
 
         /**
          * @brief register a value into the top level module object
@@ -51,14 +55,14 @@ namespace JS {
          * @param name the name of the property internally
          * @param value the value of the property
          */
-        void Register(const char* name, JS::Value value);
+        void Register(const char *name, JS::Value value);
 
         /**
          * @brief throw an exception
          * 
          * @param error the exception string to throw
          */
-        static void ThrowException(const char* error);
+        static void ThrowException(const char *error);
 
         /**
          * @brief Set the function to be called on exceptions
@@ -67,7 +71,7 @@ namespace JS {
          */
         void SetErrorCallback(std::function<void(JS::Object)> callback);
     protected:
-        JS::Value RunBasic(const std::string& name, const std::string& script);
+        JS::Value RunBasic(const std::string &name, const std::string &script);
 
         JsRuntimeHandle runtime = nullptr;
         JsContextRef context = nullptr;
@@ -77,9 +81,12 @@ namespace JS {
 
         std::function<void(JS::Object)> errorCallback = nullptr;
 
+        static thread_local uint contextNumber;
+
         // Register native functions into the runtime
         void RegisterBindings();
 
         friend class Bindings;
+        friend class Native;
     };
 }

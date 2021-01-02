@@ -7,6 +7,8 @@
 #include "common.h"
 
 namespace JS {
+    thread_local uint Runtime::contextNumber = 0;
+
     Runtime::Runtime(int memoryLimit) {
         if (JsCreateRuntime(JsRuntimeAttributeDisableFatalOnOOM, nullptr, &this->runtime) != JsNoError)
             throw FatalRuntimeException();
@@ -17,6 +19,8 @@ namespace JS {
             throw FatalRuntimeException();
 
         JsSetCurrentContext(this->context);
+
+        Runtime::contextNumber = 0;
 
         // Setup native function binds from JS
         Native::Init();
@@ -98,7 +102,7 @@ namespace JS {
     JS::Value Runtime::RunBasic(const std::string& name, const std::string& script) {
         JsValueRef result;
 
-        if (JsRun(JS::String(script.c_str()), 0, JS::String(name.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
+        if (JsRun(JS::String(script.c_str()), Runtime::contextNumber++, JS::String(name.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
             // Get exception object
             JsValueRef jsException;
             if (JsGetAndClearException(&jsException) != JsNoError)
