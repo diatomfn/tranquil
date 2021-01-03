@@ -107,7 +107,7 @@ namespace JS {
             JsValueRef jsException;
             if (JsGetAndClearException(&jsException) != JsNoError)
                 throw FatalRuntimeException();
-
+            
             if (this->errorCallback != nullptr) {
                 this->errorCallback(JS::Object(jsException));
             }
@@ -140,7 +140,7 @@ namespace JS {
 
     void Runtime::RegisterBindings() {
         this->Register("setTimeout", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this));
-        this->Register("setInterval", JS::Common::CreateFunction(Bindings::NativeSetTimeout, this));
+        this->Register("setInterval", JS::Common::CreateFunction(Bindings::NativeSetInterval, this));
 
         // Clear interval/timeout, same function with two aliases
         this->Register("clearTimeout", JS::Common::CreateFunction(Bindings::NativeClearTimeout, nullptr));

@@ -19,22 +19,10 @@ namespace JS {
     void EventLoop::HandleException(JsValueRef except) {
         JsValueRef jsException;
 
-        if (JsGetAndClearExceptionWithMetadata(&jsException) != JsNoError)
+        if (JsGetAndClearException(&jsException) != JsNoError)
             throw FatalRuntimeException();
 
         this->errorCallback(JS::Object(jsException));
-
-        // JS::Object exceptionMeta(jsException);
-        // JS::Object exception(exceptionMeta.GetProperty("exception"));
-
-        // JS::Value lineValue = exceptionMeta.GetProperty("line");
-        // JS::Value colValue = exceptionMeta.GetProperty("column");
-        // JS::Value trace = exception.GetProperty("stack");
-
-        // int line = (int)JS::Number(lineValue);
-        // int col = (int)JS::Number(colValue);
-
-        //this->outputLog->Push(trace, Output::LogType::ERR, line, col);
     }
 
     void EventLoop::SetErrorCallback(std::function<void(JS::Object)> callback) {
