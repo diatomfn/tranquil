@@ -15,20 +15,22 @@ namespace JS {
     }
 
     Value::operator std::string() const {
-        JsValueRef stringValue;
+        JsValueRef value;
 
-        if (JsConvertValueToString(this->value, &stringValue) != JsNoError)
+        if (JsConvertValueToString(this->value, &value) != JsNoError)
             throw FatalRuntimeException();
  
         char* str = nullptr;
-        int length;
+        size_t length;
 
-        if (JsGetStringLength(stringValue, &length) != JsNoError)
+        // get the length of the value
+        if (JsCopyString(value, nullptr, 0, &length) != JsNoError)
             throw FatalRuntimeException();
 
         str = (char*) malloc(length + 1);
 
-        if (JsCopyString(stringValue, str, length+1, nullptr) != JsNoError) {
+        // get the value as a string
+        if (JsCopyString(value, str, length+1, nullptr) != JsNoError) {
             free(str);
             throw FatalRuntimeException();
         }
