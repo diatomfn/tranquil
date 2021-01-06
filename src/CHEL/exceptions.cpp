@@ -4,11 +4,14 @@
 #include <fmt/format.h>
 
 namespace JS::Exceptions {
-    void InvalidArgument(JsValueType type) {
-        JS::Runtime::ThrowException(fmt::format("Argument type is invalid, expected {}", JS::Value::GetTypeString(type)).c_str());
+    void InvalidArgument() {
+        JS::Runtime::ThrowException("Invalid argument type.");
     }
     
-    void ClassNewKeyword(const char* className) {
-        JS::Runtime::ThrowException(fmt::format("Class constructor {} cannot be invoked without 'new'", className).c_str());
+    void ClassNewKeyword() {
+        JsValueRef error;
+        if (JsCreateTypeError(JS::String("Class constructor cannot be called without the new keyword"), &error) != JsNoError)
+            throw FatalRuntimeException();
+        JS::Runtime::ThrowException(error);
     }
 }

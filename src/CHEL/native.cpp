@@ -30,27 +30,7 @@ namespace JS {
     }
 
     JsValueRef Native::JSONStringify(JsValueRef object) {
-        JsValueRef function;
-
-        auto parseFormat = [](JsValueRef call, bool isConstructCall, JsValueRef *args, unsigned short argumentCount, void *callbackState) -> JsValueRef {
-            if (argumentCount < 3) {
-                return JS_INVALID_REFERENCE;
-            }
-
-            JsValueType type;
-            if (JsGetValueType(args[2], &type) != JsNoError)
-                return args[2];
-
-            if (type == JsFunction)
-                return JS::String("[function]");
-
-            return args[2];
-        };
-
-        if (JsCreateFunction(parseFormat, nullptr, &function) != JsNoError)
-            throw FatalRuntimeException();
-
-        JsValueRef arguments[] = {JS::Value(), object, function};
+        JsValueRef arguments[] = {JS::Value(), object};
 
         JsValueRef result;
 

@@ -63,6 +63,7 @@ namespace JS {
          * @param error the exception string to throw
          */
         static void ThrowException(const char *error);
+        static void ThrowException(JsValueRef error);
 
         /**
          * @brief Set the function to be called on exceptions

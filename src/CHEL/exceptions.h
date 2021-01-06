@@ -4,6 +4,13 @@
 #include "pch.h"
 
 namespace JS::Exceptions {
-    void InvalidArgument(JsValueType type);
-    void ClassNewKeyword(const char* className);
+    /**
+     * @brief Throw an invalid argument exception
+     */
+    void InvalidArgument();
+
+    /**
+     * @brief Throw a constructor not called with new exception
+     */
+    void ClassNewKeyword();
 }

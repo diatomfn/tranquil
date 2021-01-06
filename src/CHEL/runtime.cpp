@@ -154,6 +154,10 @@ namespace JS {
         if (JsSetException(errorObject) != JsNoError) return;
     }
 
+    void Runtime::ThrowException(JsValueRef error) {
+        if (JsSetException(error) != JsNoError) return;
+    }
+
     void Runtime::SetErrorCallback(std::function<void(JS::Object)> callback) {
         this->errorCallback = callback;
     }
