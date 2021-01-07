@@ -19,7 +19,7 @@ namespace JS::Common {
     }
     bool AssertArgument(JsValueRef value, JsValueType type, bool exception) {
         if (JS::Value::GetType(value) != type) {
-            if (exception) JS::Exceptions::InvalidArgument(type);
+            if (exception) JS::Exceptions::InvalidArgument();
             return false;
         }
         return true;
