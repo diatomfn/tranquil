@@ -1,6 +1,6 @@
 #include "common.h"
 
-#include "types/value.h"
+#include "value.h"
 #include "exceptions.h"
 
 namespace JS::Common {
@@ -17,6 +17,7 @@ namespace JS::Common {
             throw FatalRuntimeException();
         return JS::Value(ret);
     }
+
     bool AssertArgument(JsValueRef value, JsValueType type, bool exception) {
         if (JS::Value::GetType(value) != type) {
             if (exception) JS::Exceptions::InvalidArgument();

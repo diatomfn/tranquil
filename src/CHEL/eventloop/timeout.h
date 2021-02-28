@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CHEL/pch.h"
-#include "CHEL/types/types.h"
+#include "CHEL/value.h"
 
 namespace JS {
     class Timeout {

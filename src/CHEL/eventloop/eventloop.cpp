@@ -9,10 +9,10 @@ namespace JS {
     }
 
     void EventLoop::PromiseCallback(JsValueRef task, void* callbackState) {
-        JS::Object global = JS::Object::GetGlobalObject();
+        JS::Value global = JS::Value::GetGlobalContext();
         auto* queue = static_cast<std::queue<Task*>*>(callbackState);
 
-        JS::Timeout timeout(task, JS::Number(0.0), JS::Boolean(false));
+        JS::Timeout timeout(task, JS::Value(0.0), JS::Value(false));
         queue->push(new Task(timeout.object, global, JS_INVALID_REFERENCE, false));
     }
 
@@ -22,10 +22,10 @@ namespace JS {
         if (JsGetAndClearException(&jsException) != JsNoError)
             throw FatalRuntimeException();
 
-        this->errorCallback(JS::Object(jsException));
+        this->errorCallback(JS::Value(jsException));
     }
 
-    void EventLoop::SetErrorCallback(std::function<void(JS::Object)> callback) {
+    void EventLoop::SetErrorCallback(std::function<void(JS::Value)> callback) {
         this->errorCallback = callback;
     }
 
@@ -36,8 +36,8 @@ namespace JS {
             auto timeout = JS::Timeout(task->timeout);
 
             int currentTime = (int)(clock() / (CLOCKS_PER_SEC / (double)1000));
-            if (!JS::Boolean(timeout._destroyed)) {
-                if (currentTime-task->time > (int)((double)JS::Number(timeout._repeat))) {
+            if (!JS::Value(timeout._destroyed).AsBool()) {
+                if (currentTime-task->time > (int)(JS::Value(timeout._repeat).AsDouble())) {
                     JsValueRef taskResult = task->Invoke();
                     if (task->excepted) this->HandleException(taskResult);
                     if (task->repeat) {

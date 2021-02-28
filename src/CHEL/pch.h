@@ -6,5 +6,6 @@
 #include <queue>
 #include <functional>
 #include <cstring>
+#include <vector>
 
 #include <ChakraCore.h>

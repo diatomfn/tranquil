@@ -17,7 +17,7 @@ namespace JS {
             if (!JS::Common::AssertArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
             if (!JS::Common::AssertArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
 
-            JS::Timeout timeout(func, time, JS::Boolean(false));
+            JS::Timeout timeout(func, time, JS::Value(false));
             runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE));
 
             return timeout.object;
@@ -39,7 +39,7 @@ namespace JS {
             if (!JS::Common::AssertArgument(func, JsFunction, true)) return JS_INVALID_REFERENCE;
             if (!JS::Common::AssertArgument(time, JsNumber, true)) return JS_INVALID_REFERENCE;
 
-            JS::Timeout timeout(func, time, JS::Boolean(false));
+            JS::Timeout timeout(func, time, JS::Value(false));
             runtime->eventLoop.taskQueue.push(new Task(timeout.object, args[0], JS_INVALID_REFERENCE, true));
 
             return timeout.object;

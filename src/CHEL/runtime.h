@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-#include "types/types.h"
+#include "value.h"
 
 #include "CHEL/eventloop/eventloop.h"
 
@@ -70,17 +70,17 @@ namespace JS {
          * 
          * @param callback the function to execute
          */
-        void SetErrorCallback(std::function<void(JS::Object)> callback);
+        void SetErrorCallback(std::function<void(JS::Value)> callback);
     protected:
         JS::Value RunBasic(const std::string &name, const std::string &script);
 
         JsRuntimeHandle runtime = nullptr;
         JsContextRef context = nullptr;
 
-        JS::Object modules = JS::Object(JS_INVALID_REFERENCE);
+        JS::Value modules = JS::Value(JS_INVALID_REFERENCE);
         JS::EventLoop eventLoop;
 
-        std::function<void(JS::Object)> errorCallback = nullptr;
+        std::function<void(JS::Value)> errorCallback = nullptr;
 
         static thread_local uint contextNumber;
 

@@ -10,7 +10,7 @@ namespace JS::Exceptions {
     
     void ClassNewKeyword() {
         JsValueRef error;
-        if (JsCreateTypeError(JS::String("Class constructor cannot be called without the new keyword"), &error) != JsNoError)
+        if (JsCreateTypeError(JS::Value("Class constructor cannot be called without the new keyword"), &error) != JsNoError)
             throw FatalRuntimeException();
         JS::Runtime::ThrowException(error);
     }

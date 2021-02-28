@@ -3,9 +3,9 @@
 #include "CHEL/pch.h"
 
 #include "CHEL/bindings.h"
-#include "task.h"
+#include "CHEL/value.h"
 
-#include "CHEL/types/types.h"
+#include "CHEL/eventloop/task.h"
 
 namespace JS {
     // Declare to prevent include loop
@@ -20,7 +20,7 @@ namespace JS {
          * 
          * @param callback the function to execute
          */
-        void SetErrorCallback(std::function<void(JS::Object)> callback);
+        void SetErrorCallback(std::function<void(JS::Value)> callback);
     private:
         void InitPromiseCallback();
         static void PromiseCallback(JsValueRef task, void* callbackState);
@@ -29,7 +29,7 @@ namespace JS {
 
         std::queue<Task*> taskQueue;
 
-        std::function<void(JS::Object)> errorCallback = nullptr;
+        std::function<void(JS::Value)> errorCallback = nullptr;
 
         friend class Runtime;
         friend class Bindings;

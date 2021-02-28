@@ -2,7 +2,6 @@
 
 #include "FatalRuntimeException.h"
 
-#include "types/types.h"
 #include "native.h"
 #include "common.h"
 
@@ -19,14 +18,14 @@ namespace JS {
             throw FatalRuntimeException();
 
         JsSetCurrentContext(this->context);
-
+        
         Runtime::contextNumber = 0;
 
         // Setup native function binds from JS
         Native::Init();
 
         // Initialize object members
-        this->modules = JS::Object();
+        this->modules = JS::Value::Object();
 
         // Register bindings from C++ to JS
         this->RegisterBindings();
@@ -45,7 +44,7 @@ namespace JS {
             throw FatalRuntimeException();
         }
 
-        JS::Object global = JS::Object::GetGlobalObject();
+        JS::Value global = JS::Value::GetGlobalContext();
 
         // Inherit module object from runtime
         if (inheritModules)
@@ -77,7 +76,7 @@ namespace JS {
             throw FatalRuntimeException();
         }
 
-        JS::Object global = JS::Object::GetGlobalObject();
+        JS::Value global = JS::Value::GetGlobalContext();
 
         // Inherit module object from runtime
         JS::Native::ObjectAssign(global, this->modules);
@@ -93,7 +92,7 @@ namespace JS {
 
     JS::Value Runtime::Run(const std::string& name, const std::string& script) {
         // Inherit all requires of the require object
-        JS::Object global = JS::Object::GetGlobalObject();
+        JS::Value global = JS::Value::GetGlobalContext();
         JS::Native::ObjectAssign(global, this->modules);
 
         return this->RunBasic(name, script);
@@ -102,14 +101,14 @@ namespace JS {
     JS::Value Runtime::RunBasic(const std::string& name, const std::string& script) {
         JsValueRef result;
 
-        if (JsRun(JS::String(script.c_str()), Runtime::contextNumber++, JS::String(name.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
+        if (JsRun(JS::Value(script.c_str()), Runtime::contextNumber++, JS::Value(name.c_str()), JsParseScriptAttributeNone, &result) != JsNoError) {
             // Get exception object
             JsValueRef jsException;
             if (JsGetAndClearException(&jsException) != JsNoError)
                 throw FatalRuntimeException();
             
             if (this->errorCallback != nullptr) {
-                this->errorCallback(JS::Object(jsException));
+                this->errorCallback(JS::Value(jsException));
             }
         }
 
@@ -133,7 +132,7 @@ namespace JS {
     }
 
     void Runtime::Register(const char *name, JS::Value value) {
-        JS::Object modules(this->modules);
+        JS::Value modules(this->modules);
 
         modules.SetProperty(name, value);
     }
@@ -148,7 +147,7 @@ namespace JS {
     }
 
     void Runtime::ThrowException(const char *error) {
-        JS::String value(error);
+        JS::Value value(error);
         JsValueRef errorObject;
         if (JsCreateError(value, &errorObject) != JsNoError) return;
         if (JsSetException(errorObject) != JsNoError) return;
@@ -158,7 +157,7 @@ namespace JS {
         if (JsSetException(error) != JsNoError) return;
     }
 
-    void Runtime::SetErrorCallback(std::function<void(JS::Object)> callback) {
+    void Runtime::SetErrorCallback(std::function<void(JS::Value)> callback) {
         this->errorCallback = callback;
     }
 }

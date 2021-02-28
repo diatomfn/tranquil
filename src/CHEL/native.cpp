@@ -9,17 +9,19 @@ namespace JS {
     thread_local JsValueRef Native::jsonStringify = JS_INVALID_REFERENCE;
     thread_local JsValueRef Native::jsonParse = JS_INVALID_REFERENCE;
     thread_local JsValueRef Native::objectAssign = JS_INVALID_REFERENCE;
+    thread_local JsValueRef Native::objectValues = JS_INVALID_REFERENCE;
 
     void Native::Init() {
         // Copy native functions from runtime before user can change references
         Native::jsonStringify = GetFromJS("JSON.stringify");
         Native::jsonParse = GetFromJS("JSON.parse");
         Native::objectAssign = GetFromJS("Object.assign");
+        Native::objectValues = GetFromJS("Object.values");
     }
 
-    JsValueRef Native::GetFromJS(const char *identifier) {
-        JsValueRef toReturn = JS::String(identifier);
-        JsValueRef name = JS::String(identifier);
+    JsValueRef Native::GetFromJS(const std::string& identifier) {
+        JsValueRef toReturn = JS::Value(identifier);
+        JsValueRef name = JS::Value(identifier);
 
         JsValueRef result;
 
