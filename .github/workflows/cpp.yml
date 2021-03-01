@@ -1,0 +1,17 @@
+name: cpp
+
+on: [push]
+
+jobs:
+  ubuntu-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Run CMake
+      uses: lukka/run-cmake@v3
+      id: runcmake
+      with:
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'

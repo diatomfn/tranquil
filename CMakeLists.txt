@@ -1,21 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
-
 set(CMAKE_CXX_STANDARD 20)
 
 # Chakra helper library
-project(CHEL)
+project(tranquil_root)
 
-set(SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
-set(INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
+# Dependency directory
+set(VENDOR_DIR ${CMAKE_CURRENT_LIST_DIR}/vendor)
 
-file(GLOB_RECURSE SRC ${SOURCE_DIR}/*.cpp)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-add_library(CHEL ${SRC})
-target_include_directories(CHEL PUBLIC ${SOURCE_DIR})
-target_include_directories(CHEL PUBLIC ${INCLUDE_DIR})
+# Build targets
+add_subdirectory(tranquil)
+add_subdirectory(sandbox)
 
-target_precompile_headers(CHEL PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src/CHEL/pch.h)
-
-# Add libraries
-target_link_libraries(CHEL PUBLIC chakracore)
-target_link_libraries(CHEL PRIVATE fmt::fmt-header-only)
+# Register libraries
+add_subdirectory(${VENDOR_DIR}/chakracore)
