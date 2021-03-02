@@ -1,0 +1,3 @@
+[submodule "samples/OpenGL/vendor/glfw"]
+	path = samples/OpenGL/vendor/glfw
+	url = https://github.com/glfw/glfw.git
