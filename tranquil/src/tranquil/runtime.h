@@ -6,7 +6,6 @@
 #include "context.h"
 #include "native.h"
 
-#include "FatalRuntimeException.h"
 #include "tranquil/eventloop/eventloop.h"
 
 namespace tranquil {

@@ -39,6 +39,10 @@ namespace tranquil {
         }
     };
 
+    /**
+     * @brief A value reference from the Javascript runtime
+     * 
+     */
     class Value {
     public:
         /**
@@ -70,6 +74,14 @@ namespace tranquil {
         Value(double value);
 
         /**
+         * @brief Create a new JavaScript boolean.
+         * Must be explicit because of constructor issues
+         * 
+         * @param value boolean value
+         */
+        explicit Value(bool value);
+
+        /**
          * @brief Create a new function value from a C function
          * 
          * @param function
@@ -78,12 +90,12 @@ namespace tranquil {
         Value(JsNativeFunction function, void* callbackState);
 
         /**
-         * @brief Create a new JavaScript boolean.
-         * Must be explicit because of constructor issues
+         * @brief Construct a new object with external data
          * 
-         * @param value boolean value
+         * @param data to contain within the object, can be anything
+         * @param finalizer finalizer for when the object is garbage collected, can be null
          */
-        explicit Value(bool value);
+        static Value External(void* data, JsFinalizeCallback finalizer);
 
         /**
          * @brief Create a new empty JavaScript object
@@ -97,7 +109,8 @@ namespace tranquil {
 
         /**
          * @brief Create a promise.
-         * Promises can only be constructed here, no value can be converted to a promise unless provided as reference
+         * Promises can only be constructed here, no value can be converted to a promise unless provided as reference.
+         * PromiseResolve/ProjectReject methods will only be available from this constructor and this value reference.
          */
         static Value Promise();
 
@@ -107,6 +120,18 @@ namespace tranquil {
          * @return Value reference to global object
          */
         static Value GetGlobalObject();
+
+        /**
+         * @brief Set the prototype of the value
+         * 
+         * @param value value to set prototype to
+         */
+        void SetPrototype(JsValueRef value);
+
+        /**
+         * @brief Get the prototype of the value
+         */
+        Value GetPrototype();
 
         /**
          * @return value as string value
@@ -243,6 +268,24 @@ namespace tranquil {
          * @param arguments to pass to function
          */
         Value Invoke(std::vector<tranquil::Value>& arguments);
+
+        /**
+         * @return does the object have external data.
+         */
+        bool HasExternalData();
+
+        /**
+         * @brief Set the external data of an external object.
+         * Must be initialized as an external object
+         * 
+         * @param data new data to set
+         */
+        void SetExternalData(void* data);
+
+        /**
+         * @brief Get the external data of an external object.
+         */
+        void* GetExternalData();
 
         operator JsValueRef () const;
     private:

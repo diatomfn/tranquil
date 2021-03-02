@@ -2,7 +2,6 @@
 
 #include "tranquil/pch.h"
 
-#include "tranquil/FatalRuntimeException.h"
 #include "timeout.h"
 
 namespace tranquil {

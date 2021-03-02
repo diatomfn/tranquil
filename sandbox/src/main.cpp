@@ -4,6 +4,11 @@
 
 tranquil::Value BasicLog(bool isConstructor, tranquil::Value context, std::vector<tranquil::Value> args, void* callbackState);
 
+tranquil::Value BasicLog(bool isConstructor, tranquil::Value context, std::vector<tranquil::Value> args, void* callbackState) {
+    std::cout << args[0].AsString() << std::endl;
+    return nullptr;
+}
+
 int main() {
     tranquil::Context context;
     tranquil::Runtime runtime(10, context);
@@ -28,9 +33,4 @@ int main() {
             std::cout << result.AsString() << std::endl;
         }
     }
-}
-
-tranquil::Value BasicLog(bool isConstructor, tranquil::Value context, std::vector<tranquil::Value> args, void* callbackState) {
-    std::cout << args[0].AsString() << std::endl;
-    return nullptr;
 }

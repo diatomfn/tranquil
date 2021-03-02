@@ -23,11 +23,15 @@ namespace tranquil {
     }
 
     Value::Value(JsNativeFunction function, void* callbackState) {
-        JsValueRef functionRef;
-        if (JsCreateFunction(function, callbackState, &functionRef) != JsNoError)
+        if (JsCreateFunction(function, callbackState, &this->value) != JsNoError)
             throw ValueException();
+    }
 
-        this->value = Value(functionRef);
+    Value Value::External(void* data, JsFinalizeCallback finalizer) {
+        JsValueRef ref;
+        if (JsCreateExternalObject(data, finalizer, &ref) != JsNoError)
+            throw ValueException();
+        return Value(ref);
     }
     
     Value::Value(bool value) {
@@ -115,6 +119,25 @@ namespace tranquil {
 
     #pragma endregion Promise
 
+    bool Value::HasExternalData() {
+        bool hasExternalData;
+        if (JsHasExternalData(this->value, &hasExternalData) != JsNoError)
+            throw ValueException();
+        return hasExternalData;
+    }
+
+    void* Value::GetExternalData() {
+        void* data;
+        if (JsGetExternalData(this->value, &data) != JsNoError)
+            throw ValueException();
+        return data;
+    }
+
+    void Value::SetExternalData(void* data) {
+        if (JsSetExternalData(this->value, data) != JsNoError)
+            throw ValueException();
+    }
+
     JsValueType Value::GetType() {
         JsValueType type;
         if (JsGetValueType(value, &type) != JsNoError)
@@ -186,6 +209,18 @@ namespace tranquil {
 
     void Value::SetProperty(const std::string& key, JsValueRef value) {
         SetProperty(Value(key), value);
+    }
+
+    void Value::SetPrototype(JsValueRef value) {
+        if (JsSetPrototype(this->value, value) != JsNoError)
+            throw ValueException();
+    }
+
+    Value Value::GetPrototype() {
+        JsValueRef proto;
+        if (JsGetPrototype(this->value, &proto) != JsNoError)
+            throw ValueException();
+        return Value(proto);
     }
 
     void Value::ArrayPush(JsValueRef value) {

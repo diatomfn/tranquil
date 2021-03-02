@@ -70,7 +70,7 @@ namespace tranquil {
             // Get exception object
             JsValueRef jsException;
             if (JsGetAndClearException(&jsException) != JsNoError)
-                throw FatalRuntimeException();
+                throw FatalRuntimeException("There was a problem while getting exception");
             
             if (this->errorCallback != nullptr) {
                 this->errorCallback(tranquil::Value(jsException));
