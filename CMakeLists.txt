@@ -14,7 +14,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Build targets
 add_subdirectory(tranquil)
 add_subdirectory(sandbox)
-add_subdirectory(samples/OpenGL)
 
 # Register libraries
 add_subdirectory(${VENDOR_DIR}/chakracore)
