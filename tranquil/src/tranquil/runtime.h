@@ -74,6 +74,8 @@ namespace tranquil {
          * @param callback the function to execute
          */
         void SetErrorCallback(std::function<void(tranquil::Value)> callback);
+
+        tranquil::EventLoop& GetEventLoop() { return eventLoop; };
     protected:
         tranquil::Value RunBasic(const std::string &name, const std::string &script);
         

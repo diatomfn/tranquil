@@ -21,7 +21,7 @@ int main() {
     runtime.SetErrorCallback([] (tranquil::Value error) {
         std::cout << error.AsString() << std::endl;
     });
-
+    
     while (true) {
         std::cout << ">> ";
 

@@ -29,6 +29,10 @@ namespace tranquil {
         this->errorCallback = callback;
     }
 
+    void EventLoop::AddTask(Task* task) {
+        this->taskQueue.push(task);
+    }
+
     void EventLoop::Loop() {
         while (!taskQueue.empty()) {
             Task* task = taskQueue.front();

@@ -14,12 +14,14 @@ namespace tranquil {
         void Loop();
 
         /**
-         * @brief Set the function to be called on exceptions
+         * @brief Add a task to the eventloop
          * 
-         * @param callback the function to execute
+         * @param task to add
          */
-        void SetErrorCallback(std::function<void(tranquil::Value)> callback);
+        void AddTask(Task* task);
     private:
+        void SetErrorCallback(std::function<void(tranquil::Value)> callback);
+
         void InitPromiseCallback();
         static void PromiseCallback(JsValueRef task, void* callbackState);
 

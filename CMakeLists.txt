@@ -15,5 +15,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(tranquil)
 add_subdirectory(sandbox)
 
+# Samples
+add_subdirectory(samples/engine)
+
 # Register libraries
 add_subdirectory(${VENDOR_DIR}/chakracore)
