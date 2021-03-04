@@ -14,7 +14,7 @@ This project has been developed on Ubuntu 20.04 and only tested on Ubuntu 20.04.
 ```shell script
 git clone https://github.com/ScytheApp/tranquil.git
 cd tranquil
-./setup.sh
-cmake CMakeLists.txt
-cmake --build build
+mkdir build && cd build
+cmake ..
+cmake --build build --target tranquil
 ```
